@@ -36,11 +36,11 @@
 
 using replicant::failure_tracker;
 
-failure_tracker :: failure_tracker(configuration* config)
-    : m_config(config)
-    , m_us()
+failure_tracker :: failure_tracker(configuration *config)
+	: m_config(config)
+	, m_us()
 {
-    assume_all_alive();
+	assume_all_alive();
 }
 
 failure_tracker :: ~failure_tracker() throw ()
@@ -50,65 +50,59 @@ failure_tracker :: ~failure_tracker() throw ()
 void
 failure_tracker :: set_server_id(server_id us)
 {
-    m_us = us;
+	m_us = us;
 }
 
 void
 failure_tracker :: assume_all_alive()
 {
-    const uint64_t now = po6::monotonic_time();
-
-    for (unsigned i = 0; i < REPLICANT_MAX_REPLICAS; ++i)
-    {
-        m_last_seen[i] = now;
-    }
+	const uint64_t now = po6::monotonic_time();
+	for (unsigned i = 0; i < REPLICANT_MAX_REPLICAS; ++i)
+	{
+		m_last_seen[i] = now;
+	}
 }
 
 void
 failure_tracker :: proof_of_life(server_id si)
 {
-    const std::vector<server>& servers(m_config->servers());
-
-    for (unsigned i = 0; i < servers.size() && i < REPLICANT_MAX_REPLICAS; ++i)
-    {
-        if (servers[i].id == si)
-        {
-            m_last_seen[i] = po6::monotonic_time();
-        }
-    }
+	const std::vector<server> &servers(m_config->servers());
+	for (unsigned i = 0; i < servers.size() && i < REPLICANT_MAX_REPLICAS; ++i)
+	{
+		if (servers[i].id == si)
+		{
+			m_last_seen[i] = po6::monotonic_time();
+		}
+	}
 }
 
 bool
 failure_tracker :: suspect_failed(server_id si, uint64_t timeout)
 {
-    if (si == m_us)
-    {
-        return false;
-    }
-
-    const std::vector<server>& servers(m_config->servers());
-    assert(servers.size() <= REPLICANT_MAX_REPLICAS);
-    const uint64_t max_seen = *std::max_element(m_last_seen, m_last_seen + servers.size());
-
-    for (size_t i = 0; i < servers.size(); ++i)
-    {
-        if (servers[i].id == m_us)
-        {
-            m_last_seen[i] = max_seen;
-        }
-    }
-
-    for (size_t i = 0; i < servers.size(); ++i)
-    {
-        if (servers[i].id == si)
-        {
-            const uint64_t now = po6::monotonic_time();
-            const uint64_t diff = now - m_last_seen[i];
-            const uint64_t self_suspicion = now - max_seen;
-            const uint64_t susp = diff - self_suspicion;
-            return susp > timeout;
-        }
-    }
-
-    return true;
+	if (si == m_us)
+	{
+		return false;
+	}
+	const std::vector<server> &servers(m_config->servers());
+	assert(servers.size() <= REPLICANT_MAX_REPLICAS);
+	const uint64_t max_seen = *std::max_element(m_last_seen, m_last_seen + servers.size());
+	for (size_t i = 0; i < servers.size(); ++i)
+	{
+		if (servers[i].id == m_us)
+		{
+			m_last_seen[i] = max_seen;
+		}
+	}
+	for (size_t i = 0; i < servers.size(); ++i)
+	{
+		if (servers[i].id == si)
+		{
+			const uint64_t now = po6::monotonic_time();
+			const uint64_t diff = now - m_last_seen[i];
+			const uint64_t self_suspicion = now - max_seen;
+			const uint64_t susp = diff - self_suspicion;
+			return susp > timeout;
+		}
+	}
+	return true;
 }

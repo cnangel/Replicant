@@ -35,24 +35,24 @@ BEGIN_REPLICANT_NAMESPACE
 
 class pending_robust : public pending
 {
-    public:
-        pending_robust(int64_t client_visible_id,
-                       replicant_returncode* status);
-        virtual ~pending_robust() throw ();
+public:
+	pending_robust(int64_t client_visible_id,
+	               replicant_returncode *status);
+	virtual ~pending_robust() throw ();
 
-    public:
-        void set_params(uint64_t command_nonce, uint64_t min_slot);
-        uint64_t command_nonce() const;
-        uint64_t min_slot() const;
+public:
+	void set_params(uint64_t command_nonce, uint64_t min_slot);
+	uint64_t command_nonce() const;
+	uint64_t min_slot() const;
 
-    private:
-        friend class e::intrusive_ptr<pending_robust>;
-        uint64_t m_command_nonce;
-        uint64_t m_min_slot;
+private:
+	friend class e::intrusive_ptr<pending_robust>;
+	uint64_t m_command_nonce;
+	uint64_t m_min_slot;
 
-    private:
-        pending_robust(const pending_robust&);
-        pending_robust& operator = (const pending_robust&);
+private:
+	pending_robust(const pending_robust &);
+	pending_robust &operator = (const pending_robust &);
 };
 
 END_REPLICANT_NAMESPACE

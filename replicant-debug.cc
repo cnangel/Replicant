@@ -36,15 +36,15 @@
 #include <e/subcommand.h>
 
 int
-main(int argc, const char* argv[])
+main(int argc, const char *argv[])
 {
-    std::vector<e::subcommand> cmds;
-    cmds.push_back(e::subcommand("call",              "Call a particular function on a replicated object"));
-    cmds.push_back(e::subcommand("condition",         "Track the state of a particular condition variable"));
-    return dispatch_to_subcommands(argc, argv,
-                                   "replicant debug", "Replicant",
-                                   PACKAGE_VERSION,
-                                   "replicant-debug-",
-                                   "REPLICANT_EXEC_PATH", REPLICANT_EXEC_DIR,
-                                   &cmds.front(), cmds.size());
+	std::vector<e::subcommand> cmds;
+	cmds.push_back(e::subcommand("call",              "Call a particular function on a replicated object"));
+	cmds.push_back(e::subcommand("condition",         "Track the state of a particular condition variable"));
+	return dispatch_to_subcommands(argc, argv,
+	                               "replicant debug", "Replicant",
+	                               PACKAGE_VERSION,
+	                               "replicant-debug-",
+	                               "REPLICANT_EXEC_PATH", REPLICANT_EXEC_DIR,
+	                               &cmds.front(), cmds.size());
 }

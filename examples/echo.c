@@ -29,41 +29,43 @@
 /* Replicant */
 #include <rsm.h>
 
-void*
-echo_create(struct rsm_context* ctx)
+void *
+echo_create(struct rsm_context *ctx)
 {
-    return (void*) -1;
+	return (void *) - 1;
 }
 
-void*
-echo_recreate(struct rsm_context* ctx,
-              const char* data, size_t data_sz)
+void *
+echo_recreate(struct rsm_context *ctx,
+              const char *data, size_t data_sz)
 {
-    return (void*) -1;
+	return (void *) - 1;
 }
 
 int
-echo_snapshot(struct rsm_context* ctx,
-              void* obj,
-              char** data, size_t* data_sz)
+echo_snapshot(struct rsm_context *ctx,
+              void *obj,
+              char **data, size_t *data_sz)
 {
-    *data = NULL;
-    *data_sz = 0;
-    return 0;
+	*data = NULL;
+	*data_sz = 0;
+	return 0;
 }
 
 void
-echo_echo(struct rsm_context* ctx,
-          void* obj,
-          const char* data, size_t data_sz)
+echo_echo(struct rsm_context *ctx,
+          void *obj,
+          const char *data, size_t data_sz)
 {
-    rsm_set_output(ctx, data, data_sz);
+	rsm_set_output(ctx, data, data_sz);
 }
 
-struct state_machine rsm = {
-    echo_create,
-    echo_recreate,
-    echo_snapshot,
-    {{"echo", echo_echo},
-     {NULL, NULL}}
+struct state_machine rsm =
+{
+	echo_create,
+	echo_recreate,
+	echo_snapshot,
+	{	{"echo", echo_echo},
+		{NULL, NULL}
+	}
 };

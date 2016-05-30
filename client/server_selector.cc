@@ -34,14 +34,14 @@
 using replicant::server_id;
 using replicant::server_selector;
 
-server_selector :: server_selector(const std::vector<server_id>& servers, uint64_t rand)
-    : m_servers(servers)
-    , m_consumed_idx(0)
+server_selector :: server_selector(const std::vector<server_id> &servers, uint64_t rand)
+	: m_servers(servers)
+	, m_consumed_idx(0)
 {
-    std::sort(m_servers.begin(), m_servers.end());
-    std::vector<server_id>::iterator it;
-    it = std::lower_bound(m_servers.begin(), m_servers.end(), server_id(rand));
-    std::rotate(m_servers.begin(), it, m_servers.end());
+	std::sort(m_servers.begin(), m_servers.end());
+	std::vector<server_id>::iterator it;
+	it = std::lower_bound(m_servers.begin(), m_servers.end(), server_id(rand));
+	std::rotate(m_servers.begin(), it, m_servers.end());
 }
 
 server_selector :: ~server_selector() throw ()
@@ -51,12 +51,12 @@ server_selector :: ~server_selector() throw ()
 server_id
 server_selector :: next()
 {
-    if (m_consumed_idx >= m_servers.size())
-    {
-        return server_id();
-    }
-    else
-    {
-        return m_servers[m_consumed_idx++];
-    }
+	if (m_consumed_idx >= m_servers.size())
+	{
+		return server_id();
+	}
+	else
+	{
+		return m_servers[m_consumed_idx++];
+	}
 }

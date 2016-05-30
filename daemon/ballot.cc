@@ -34,20 +34,20 @@
 using replicant::ballot;
 
 ballot :: ballot()
-    : number(0)
-    , leader()
+	: number(0)
+	, leader()
 {
 }
 
 ballot :: ballot(uint64_t n, server_id l)
-    : number(n)
-    , leader(l)
+	: number(n)
+	, leader(l)
 {
 }
 
-ballot :: ballot(const ballot& other)
-    : number(other.number)
-    , leader(other.leader)
+ballot :: ballot(const ballot &other)
+	: number(other.number)
+	, leader(other.leader)
 {
 }
 
@@ -55,77 +55,77 @@ ballot :: ~ballot() throw ()
 {
 }
 
-ballot&
-ballot :: operator = (const ballot& rhs)
+ballot &
+ballot :: operator = (const ballot &rhs)
 {
-    number = rhs.number;
-    leader = rhs.leader;
-    return *this;
+	number = rhs.number;
+	leader = rhs.leader;
+	return *this;
 }
 
 int
-replicant :: compare(const ballot& lhs, const ballot& rhs)
+replicant :: compare(const ballot &lhs, const ballot &rhs)
 {
-    return e::tuple_compare(lhs.number, lhs.leader,
-                            rhs.number, rhs.leader);
+	return e::tuple_compare(lhs.number, lhs.leader,
+	                        rhs.number, rhs.leader);
 }
 
 bool
-replicant :: operator < (const ballot& lhs, const ballot& rhs)
+replicant :: operator < (const ballot &lhs, const ballot &rhs)
 {
-    return compare(lhs, rhs) < 0;
+	return compare(lhs, rhs) < 0;
 }
 
 bool
-replicant :: operator <= (const ballot& lhs, const ballot& rhs)
+replicant :: operator <= (const ballot &lhs, const ballot &rhs)
 {
-    return compare(lhs, rhs) <= 0;
+	return compare(lhs, rhs) <= 0;
 }
 
 bool
-replicant :: operator == (const ballot& lhs, const ballot& rhs)
+replicant :: operator == (const ballot &lhs, const ballot &rhs)
 {
-    return compare(lhs, rhs) == 0;
+	return compare(lhs, rhs) == 0;
 }
 
 bool
-replicant :: operator != (const ballot& lhs, const ballot& rhs)
+replicant :: operator != (const ballot &lhs, const ballot &rhs)
 {
-    return compare(lhs, rhs) != 0;
+	return compare(lhs, rhs) != 0;
 }
 
 bool
-replicant :: operator >= (const ballot& lhs, const ballot& rhs)
+replicant :: operator >= (const ballot &lhs, const ballot &rhs)
 {
-    return compare(lhs, rhs) >= 0;
+	return compare(lhs, rhs) >= 0;
 }
 
 bool
-replicant :: operator > (const ballot& lhs, const ballot& rhs)
+replicant :: operator > (const ballot &lhs, const ballot &rhs)
 {
-    return compare(lhs, rhs) > 0;
+	return compare(lhs, rhs) > 0;
 }
 
-std::ostream&
-replicant :: operator << (std::ostream& lhs, const ballot& rhs)
+std::ostream &
+replicant :: operator << (std::ostream &lhs, const ballot &rhs)
 {
-    return lhs << "ballot(" << rhs.number << ", " << rhs.leader << ")";
+	return lhs << "ballot(" << rhs.number << ", " << rhs.leader << ")";
 }
 
 e::packer
-replicant :: operator << (e::packer lhs, const ballot& rhs)
+replicant :: operator << (e::packer lhs, const ballot &rhs)
 {
-    return lhs << rhs.number << rhs.leader;
+	return lhs << rhs.number << rhs.leader;
 }
 
 e::unpacker
-replicant :: operator >> (e::unpacker lhs, ballot& rhs)
+replicant :: operator >> (e::unpacker lhs, ballot &rhs)
 {
-    return lhs >> rhs.number >> rhs.leader;
+	return lhs >> rhs.number >> rhs.leader;
 }
 
 size_t
-replicant :: pack_size(const ballot& p)
+replicant :: pack_size(const ballot &p)
 {
-    return sizeof(uint64_t) + pack_size(p.leader);
+	return sizeof(uint64_t) + pack_size(p.leader);
 }

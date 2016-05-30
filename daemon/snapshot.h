@@ -51,45 +51,45 @@ BEGIN_REPLICANT_NAMESPACE
 
 class snapshot
 {
-    public:
-        snapshot(uint64_t up_to, robust_history* rh);
-        ~snapshot() throw ();
+public:
+	snapshot(uint64_t up_to, robust_history *rh);
+	~snapshot() throw ();
 
-    public:
-        uint64_t slot() const { return m_up_to; }
-        void wait();
-        void replica_internals(const e::slice& replica);
-        void start_object(const std::string& name);
-        void finish_object(const std::string& name, const std::string& snap);
-        void abort_snapshot();
-        bool done();
-        const std::string& contents();
+public:
+	uint64_t slot() const { return m_up_to; }
+	void wait();
+	void replica_internals(const e::slice &replica);
+	void start_object(const std::string &name);
+	void finish_object(const std::string &name, const std::string &snap);
+	void abort_snapshot();
+	bool done();
+	const std::string &contents();
 
-    private:
-        bool done_condition();
+private:
+	bool done_condition();
 
-    // refcount
-    private:
-        friend class e::intrusive_ptr<snapshot>;
-        void inc() { __sync_add_and_fetch(&m_ref, 1); }
-        void dec() { if (__sync_sub_and_fetch(&m_ref, 1) == 0) delete this; }
-        size_t m_ref;
+	// refcount
+private:
+	friend class e::intrusive_ptr<snapshot>;
+	void inc() { __sync_add_and_fetch(&m_ref, 1); }
+	void dec() { if (__sync_sub_and_fetch(&m_ref, 1) == 0) delete this; }
+	size_t m_ref;
 
-    private:
-        const uint64_t m_up_to;
-        po6::threads::mutex m_mtx;
-        po6::threads::cond m_cond;
-        bool m_failed;
-        robust_history* m_history;
-        std::set<std::string> m_objects;
-        std::string m_serialized_prefix;
-        std::string m_serialized_objects;
-        e::packer m_obj_packer;
-        std::string m_serialized_altogether;
+private:
+	const uint64_t m_up_to;
+	po6::threads::mutex m_mtx;
+	po6::threads::cond m_cond;
+	bool m_failed;
+	robust_history *m_history;
+	std::set<std::string> m_objects;
+	std::string m_serialized_prefix;
+	std::string m_serialized_objects;
+	e::packer m_obj_packer;
+	std::string m_serialized_altogether;
 
-    private:
-        snapshot(const snapshot&);
-        snapshot& operator = (const snapshot&);
+private:
+	snapshot(const snapshot &);
+	snapshot &operator = (const snapshot &);
 };
 
 END_REPLICANT_NAMESPACE

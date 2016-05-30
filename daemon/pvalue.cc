@@ -37,23 +37,23 @@
 using replicant::pvalue;
 
 pvalue :: pvalue()
-    : b()
-    , s()
-    , c()
+	: b()
+	, s()
+	, c()
 {
 }
 
-pvalue :: pvalue(const ballot& _b, uint64_t _s, const std::string& _c)
-    : b(_b)
-    , s(_s)
-    , c(_c)
+pvalue :: pvalue(const ballot &_b, uint64_t _s, const std::string &_c)
+	: b(_b)
+	, s(_s)
+	, c(_c)
 {
 }
 
-pvalue :: pvalue(const pvalue& other)
-    : b(other.b)
-    , s(other.s)
-    , c(other.c)
+pvalue :: pvalue(const pvalue &other)
+	: b(other.b)
+	, s(other.s)
+	, c(other.c)
 {
 }
 
@@ -61,87 +61,85 @@ pvalue :: ~pvalue() throw ()
 {
 }
 
-pvalue&
-pvalue :: operator = (const pvalue& rhs)
+pvalue &
+pvalue :: operator = (const pvalue &rhs)
 {
-    // no self check
-    b = rhs.b;
-    s = rhs.s;
-    c = rhs.c;
-    return *this;
+	// no self check
+	b = rhs.b;
+	s = rhs.s;
+	c = rhs.c;
+	return *this;
 }
 
 int
-replicant :: compare(const pvalue& lhs, const pvalue& rhs)
+replicant :: compare(const pvalue &lhs, const pvalue &rhs)
 {
-    return e::tuple_compare(lhs.b, lhs.s, rhs.b, rhs.s);
+	return e::tuple_compare(lhs.b, lhs.s, rhs.b, rhs.s);
 }
 
 bool
-replicant :: operator < (const pvalue& lhs, const pvalue& rhs)
+replicant :: operator < (const pvalue &lhs, const pvalue &rhs)
 {
-    return compare(lhs, rhs) < 0;
+	return compare(lhs, rhs) < 0;
 }
 
 bool
-replicant :: operator <= (const pvalue& lhs, const pvalue& rhs)
+replicant :: operator <= (const pvalue &lhs, const pvalue &rhs)
 {
-    return compare(lhs, rhs) <= 0;
+	return compare(lhs, rhs) <= 0;
 }
 
 bool
-replicant :: operator == (const pvalue& lhs, const pvalue& rhs)
+replicant :: operator == (const pvalue &lhs, const pvalue &rhs)
 {
-    return compare(lhs, rhs) == 0;
+	return compare(lhs, rhs) == 0;
 }
 
 bool
-replicant :: operator != (const pvalue& lhs, const pvalue& rhs)
+replicant :: operator != (const pvalue &lhs, const pvalue &rhs)
 {
-    return compare(lhs, rhs) != 0;
+	return compare(lhs, rhs) != 0;
 }
 
 bool
-replicant :: operator >= (const pvalue& lhs, const pvalue& rhs)
+replicant :: operator >= (const pvalue &lhs, const pvalue &rhs)
 {
-    return compare(lhs, rhs) >= 0;
+	return compare(lhs, rhs) >= 0;
 }
 
 bool
-replicant :: operator > (const pvalue& lhs, const pvalue& rhs)
+replicant :: operator > (const pvalue &lhs, const pvalue &rhs)
 {
-    return compare(lhs, rhs) > 0;
+	return compare(lhs, rhs) > 0;
 }
 
-std::ostream&
-replicant :: operator << (std::ostream& lhs, const pvalue& rhs)
+std::ostream &
+replicant :: operator << (std::ostream &lhs, const pvalue &rhs)
 {
-    return lhs << "pvalue(" << rhs.b << ", slot=" << rhs.s << ", command=" << e::strescape(rhs.c) << ")";
+	return lhs << "pvalue(" << rhs.b << ", slot=" << rhs.s << ", command=" << e::strescape(rhs.c) << ")";
 }
 
 size_t
-replicant :: pack_size(const pvalue& p)
+replicant :: pack_size(const pvalue &p)
 {
-    return pack_size(p.b) + pack_size(p.s) + pack_size(e::slice(p.c));
+	return pack_size(p.b) + pack_size(p.s) + pack_size(e::slice(p.c));
 }
 
 e::packer
-replicant :: operator << (e::packer lhs, const pvalue& rhs)
+replicant :: operator << (e::packer lhs, const pvalue &rhs)
 {
-    return lhs << rhs.b << rhs.s << e::slice(rhs.c);
+	return lhs << rhs.b << rhs.s << e::slice(rhs.c);
 }
 
 e::unpacker
-replicant :: operator >> (e::unpacker lhs, pvalue& rhs)
+replicant :: operator >> (e::unpacker lhs, pvalue &rhs)
 {
-    e::slice c;
-    lhs = lhs >> rhs.b >> rhs.s >> c;
-
-    if (lhs.error())
-    {
-        return lhs;
-    }
-
-    rhs.c.assign(c.cdata(), c.size());
-    return lhs;
+	e::slice c;
+	lhs = lhs >> rhs.b >> rhs.s >> c;
+	if (lhs.error())
+	{
+		return lhs;
+	}
+	rhs.c.assign(c.cdata(), c.size());
+	return lhs;
 }

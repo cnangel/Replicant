@@ -37,36 +37,36 @@ using replicant::condition;
 
 struct condition::waiter
 {
-    waiter();
-    waiter(uint64_t wait_for, server_id client, uint64_t nonce);
-    waiter(const waiter&);
-    ~waiter() throw ();
+	waiter();
+	waiter(uint64_t wait_for, server_id client, uint64_t nonce);
+	waiter(const waiter &);
+	~waiter() throw ();
 
-    static bool compare_for_heap(const waiter& lhs, const waiter& rhs);
+	static bool compare_for_heap(const waiter &lhs, const waiter &rhs);
 
-    uint64_t wait_for;
-    server_id client;
-    uint64_t nonce;
+	uint64_t wait_for;
+	server_id client;
+	uint64_t nonce;
 };
 
 condition :: waiter :: waiter()
-    : wait_for(0)
-    , client()
-    , nonce(0)
+	: wait_for(0)
+	, client()
+	, nonce(0)
 {
 }
 
 condition :: waiter :: waiter(uint64_t w, server_id c, uint64_t n)
-    : wait_for(w)
-    , client(c)
-    , nonce(n)
+	: wait_for(w)
+	, client(c)
+	, nonce(n)
 {
 }
 
-condition :: waiter :: waiter(const waiter& other)
-    : wait_for(other.wait_for)
-    , client(other.client)
-    , nonce(other.nonce)
+condition :: waiter :: waiter(const waiter &other)
+	: wait_for(other.wait_for)
+	, client(other.client)
+	, nonce(other.nonce)
 {
 }
 
@@ -75,22 +75,22 @@ condition :: waiter :: ~waiter() throw ()
 }
 
 bool
-condition :: waiter :: compare_for_heap(const waiter& lhs, const waiter& rhs)
+condition :: waiter :: compare_for_heap(const waiter &lhs, const waiter &rhs)
 {
-    return lhs.wait_for > rhs.wait_for;
+	return lhs.wait_for > rhs.wait_for;
 }
 
 condition :: condition()
-    : m_state(0)
-    , m_data()
-    , m_waiters()
+	: m_state(0)
+	, m_data()
+	, m_waiters()
 {
 }
 
 condition :: condition(uint64_t initial)
-    : m_state(initial)
-    , m_data()
-    , m_waiters()
+	: m_state(initial)
+	, m_data()
+	, m_waiters()
 {
 }
 
@@ -99,74 +99,72 @@ condition :: ~condition() throw ()
 }
 
 void
-condition :: wait(daemon* d, server_id si, uint64_t nonce, uint64_t state)
+condition :: wait(daemon *d, server_id si, uint64_t nonce, uint64_t state)
 {
-    if (state <= m_state)
-    {
-        d->callback_condition(si, nonce, m_state, m_data);
-    }
-    else
-    {
-        m_waiters.push_back(waiter(state, si, nonce));
-        std::push_heap(m_waiters.begin(), m_waiters.end(), waiter::compare_for_heap);
-    }
+	if (state <= m_state)
+	{
+		d->callback_condition(si, nonce, m_state, m_data);
+	}
+	else
+	{
+		m_waiters.push_back(waiter(state, si, nonce));
+		std::push_heap(m_waiters.begin(), m_waiters.end(), waiter::compare_for_heap);
+	}
 }
 
 void
-condition :: broadcast(daemon* d)
+condition :: broadcast(daemon *d)
 {
-    ++m_state;
-
-    while (!m_waiters.empty() && m_waiters[0].wait_for <= m_state)
-    {
-        d->callback_condition(m_waiters[0].client, m_waiters[0].nonce, m_state, m_data);
-        std::pop_heap(m_waiters.begin(), m_waiters.end(), waiter::compare_for_heap);
-        m_waiters.pop_back();
-    }
+	++m_state;
+	while (!m_waiters.empty() && m_waiters[0].wait_for <= m_state)
+	{
+		d->callback_condition(m_waiters[0].client, m_waiters[0].nonce, m_state, m_data);
+		std::pop_heap(m_waiters.begin(), m_waiters.end(), waiter::compare_for_heap);
+		m_waiters.pop_back();
+	}
 }
 
 void
-condition :: broadcast(daemon* d, const char* data, size_t data_sz)
+condition :: broadcast(daemon *d, const char *data, size_t data_sz)
 {
-    ++m_state;
-    m_data.assign(data, data_sz);
-
-    while (!m_waiters.empty() && m_waiters[0].wait_for <= m_state)
-    {
-        d->callback_condition(m_waiters[0].client, m_waiters[0].nonce, m_state, m_data);
-        std::pop_heap(m_waiters.begin(), m_waiters.end(), waiter::compare_for_heap);
-        m_waiters.pop_back();
-    }
+	++m_state;
+	m_data.assign(data, data_sz);
+	while (!m_waiters.empty() && m_waiters[0].wait_for <= m_state)
+	{
+		d->callback_condition(m_waiters[0].client, m_waiters[0].nonce, m_state, m_data);
+		std::pop_heap(m_waiters.begin(), m_waiters.end(), waiter::compare_for_heap);
+		m_waiters.pop_back();
+	}
 }
 
 uint64_t
 condition :: peek_state() const
 {
-    return m_state;
+	return m_state;
 }
 
 void
-condition :: peek_state(uint64_t* state, const char** data, size_t* data_sz) const
+condition :: peek_state(uint64_t *state, const char **data, size_t *data_sz) const
 {
-    *state = m_state;
-    *data = m_data.data();
-    *data_sz = m_data.size();
+	*state = m_state;
+	*data = m_data.data();
+	*data_sz = m_data.size();
 }
 
 e::packer
-replicant :: operator << (e::packer lhs, const condition& rhs)
+replicant :: operator << (e::packer lhs, const condition &rhs)
 {
-    return lhs << rhs.m_state;
+	return lhs << rhs.m_state;
 }
 
 e::unpacker
-replicant :: operator >> (e::unpacker lhs, condition& rhs)
+replicant :: operator >> (e::unpacker lhs, condition &rhs)
 {
-    return lhs >> rhs.m_state;
+	return lhs >> rhs.m_state;
 }
 
 size_t
-replicant :: pack_size(const condition&)
+replicant :: pack_size(const condition &)
 {
-    return sizeof(uint64_t);
+	return sizeof(uint64_t);
 }

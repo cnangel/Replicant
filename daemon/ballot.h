@@ -36,39 +36,39 @@ BEGIN_REPLICANT_NAMESPACE
 
 class ballot
 {
-    public:
-        ballot();
-        ballot(uint64_t number, server_id leader);
-        ballot(const ballot& other);
-        ~ballot() throw ();
+public:
+	ballot();
+	ballot(uint64_t number, server_id leader);
+	ballot(const ballot &other);
+	~ballot() throw ();
 
-    public:
-        ballot& operator = (const ballot& rhs);
+public:
+	ballot &operator = (const ballot &rhs);
 
-    public:
-        uint64_t number;
-        server_id leader;
+public:
+	uint64_t number;
+	server_id leader;
 };
 
 int
-compare(const ballot& lhs, const ballot& rhs);
+compare(const ballot &lhs, const ballot &rhs);
 
-bool operator < (const ballot& lhs, const ballot& rhs);
-bool operator <= (const ballot& lhs, const ballot& rhs);
-bool operator == (const ballot& lhs, const ballot& rhs);
-bool operator != (const ballot& lhs, const ballot& rhs);
-bool operator >= (const ballot& lhs, const ballot& rhs);
-bool operator > (const ballot& lhs, const ballot& rhs);
+bool operator < (const ballot &lhs, const ballot &rhs);
+bool operator <= (const ballot &lhs, const ballot &rhs);
+bool operator == (const ballot &lhs, const ballot &rhs);
+bool operator != (const ballot &lhs, const ballot &rhs);
+bool operator >= (const ballot &lhs, const ballot &rhs);
+bool operator > (const ballot &lhs, const ballot &rhs);
 
-std::ostream&
-operator << (std::ostream& lhs, const ballot& rhs);
+std::ostream &
+operator << (std::ostream &lhs, const ballot &rhs);
 
 e::packer
-operator << (e::packer lhs, const ballot& rhs);
+operator << (e::packer lhs, const ballot &rhs);
 e::unpacker
-operator >> (e::unpacker lhs, ballot& rhs);
+operator >> (e::unpacker lhs, ballot &rhs);
 size_t
-pack_size(const ballot& p);
+pack_size(const ballot &p);
 
 END_REPLICANT_NAMESPACE
 

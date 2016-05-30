@@ -30,10 +30,10 @@
 
 using replicant::pending_robust;
 
-pending_robust :: pending_robust(int64_t id, replicant_returncode* st)
-    : pending(id, st)
-    , m_command_nonce(0)
-    , m_min_slot(0)
+pending_robust :: pending_robust(int64_t id, replicant_returncode *st)
+	: pending(id, st)
+	, m_command_nonce(0)
+	, m_min_slot(0)
 {
 }
 
@@ -44,18 +44,18 @@ pending_robust :: ~pending_robust() throw ()
 void
 pending_robust :: set_params(uint64_t cn, uint64_t ms)
 {
-    m_command_nonce = cn;
-    m_min_slot = ms;
+	m_command_nonce = cn;
+	m_min_slot = ms;
 }
 
 uint64_t
 pending_robust :: command_nonce() const
 {
-    return m_command_nonce;
+	return m_command_nonce;
 }
 
 uint64_t
 pending_robust :: min_slot() const
 {
-    return m_min_slot;
+	return m_min_slot;
 }

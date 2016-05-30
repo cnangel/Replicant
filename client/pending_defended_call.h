@@ -35,33 +35,33 @@ BEGIN_REPLICANT_NAMESPACE
 
 class pending_defended_call : public pending_robust
 {
-    public:
-        pending_defended_call(int64_t id,
-                              const char* object,
-                              const char* enter_func,
-                              const char* enter_input, size_t enter_input_sz,
-                              const char* exit_func,
-                              const char* exit_input, size_t exit_input_sz,
-                              replicant_returncode* status);
-        virtual ~pending_defended_call() throw ();
+public:
+	pending_defended_call(int64_t id,
+	                      const char *object,
+	                      const char *enter_func,
+	                      const char *enter_input, size_t enter_input_sz,
+	                      const char *exit_func,
+	                      const char *exit_input, size_t exit_input_sz,
+	                      replicant_returncode *status);
+	virtual ~pending_defended_call() throw ();
 
-    public:
-        virtual std::auto_ptr<e::buffer> request(uint64_t nonce);
-        virtual bool resend_on_failure();
-        virtual void handle_response(client* cl,
-                                     std::auto_ptr<e::buffer> msg,
-                                     e::unpacker up);
+public:
+	virtual std::auto_ptr<e::buffer> request(uint64_t nonce);
+	virtual bool resend_on_failure();
+	virtual void handle_response(client *cl,
+	                             std::auto_ptr<e::buffer> msg,
+	                             e::unpacker up);
 
-    private:
-        const std::string m_object;
-        const std::string m_enter_func;
-        const std::string m_enter_input;
-        const std::string m_exit_func;
-        const std::string m_exit_input;
+private:
+	const std::string m_object;
+	const std::string m_enter_func;
+	const std::string m_enter_input;
+	const std::string m_exit_func;
+	const std::string m_exit_input;
 
-    private:
-        pending_defended_call(const pending_defended_call&);
-        pending_defended_call& operator = (const pending_defended_call&);
+private:
+	pending_defended_call(const pending_defended_call &);
+	pending_defended_call &operator = (const pending_defended_call &);
 };
 
 END_REPLICANT_NAMESPACE

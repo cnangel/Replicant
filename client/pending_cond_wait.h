@@ -35,31 +35,31 @@ BEGIN_REPLICANT_NAMESPACE
 
 class pending_cond_wait : public pending
 {
-    public:
-        pending_cond_wait(int64_t client_visible_id,
-                          const char* object, const char* cond,
-                          uint64_t state,
-                          replicant_returncode* status,
-                          char** data, size_t* data_sz);
-        virtual ~pending_cond_wait() throw ();
+public:
+	pending_cond_wait(int64_t client_visible_id,
+	                  const char *object, const char *cond,
+	                  uint64_t state,
+	                  replicant_returncode *status,
+	                  char **data, size_t *data_sz);
+	virtual ~pending_cond_wait() throw ();
 
-    public:
-        virtual std::auto_ptr<e::buffer> request(uint64_t nonce);
-        virtual bool resend_on_failure();
-        virtual void handle_response(client* cl,
-                                     std::auto_ptr<e::buffer> msg,
-                                     e::unpacker up);
+public:
+	virtual std::auto_ptr<e::buffer> request(uint64_t nonce);
+	virtual bool resend_on_failure();
+	virtual void handle_response(client *cl,
+	                             std::auto_ptr<e::buffer> msg,
+	                             e::unpacker up);
 
-    private:
-        const std::string m_object;
-        const std::string m_cond;
-        const uint64_t m_state;
-        char** const m_data;
-        size_t* const m_data_sz;
+private:
+	const std::string m_object;
+	const std::string m_cond;
+	const uint64_t m_state;
+	char **const m_data;
+	size_t *const m_data_sz;
 
-    private:
-        pending_cond_wait(const pending_cond_wait&);
-        pending_cond_wait& operator = (const pending_cond_wait&);
+private:
+	pending_cond_wait(const pending_cond_wait &);
+	pending_cond_wait &operator = (const pending_cond_wait &);
 };
 
 END_REPLICANT_NAMESPACE

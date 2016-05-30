@@ -44,34 +44,34 @@ struct rsm_context;
 
 struct state_machine_transition
 {
-    const char* name;
-    void (*func)(struct rsm_context* ctx, void* obj, const char* data, size_t data_sz);
+	const char *name;
+	void (*func)(struct rsm_context *ctx, void *obj, const char *data, size_t data_sz);
 };
 
 struct state_machine
 {
-    void* (*ctor)(struct rsm_context* ctx);
-    void* (*rtor)(struct rsm_context* ctx, const char* data, size_t data_sz);
-    int (*snap)(struct rsm_context* ctx, void* obj, char** data, size_t* data_sz);
-    struct state_machine_transition transitions[];
+	void *(*ctor)(struct rsm_context *ctx);
+	void *(*rtor)(struct rsm_context *ctx, const char *data, size_t data_sz);
+	int (*snap)(struct rsm_context *ctx, void *obj, char **data, size_t *data_sz);
+	struct state_machine_transition transitions[];
 };
 
 #pragma GCC diagnostic pop
 
-void rsm_log(struct rsm_context* ctx, const char* format, ...);
-void rsm_set_output(struct rsm_context* ctx, const char* output, size_t output_sz);
+void rsm_log(struct rsm_context *ctx, const char *format, ...);
+void rsm_set_output(struct rsm_context *ctx, const char *output, size_t output_sz);
 
-void rsm_cond_create(struct rsm_context* ctx, const char* cond);
-void rsm_cond_destroy(struct rsm_context* ctx, const char* cond);
-int rsm_cond_broadcast(struct rsm_context* ctx, const char* cond);
-int rsm_cond_broadcast_data(struct rsm_context* ctx,
-                            const char* cond,
-                            const char* data, size_t data_sz);
-int rsm_cond_current_value(struct rsm_context* ctx,
-                           const char* cond, uint64_t* state,
-                           const char** data, size_t* data_sz);
+void rsm_cond_create(struct rsm_context *ctx, const char *cond);
+void rsm_cond_destroy(struct rsm_context *ctx, const char *cond);
+int rsm_cond_broadcast(struct rsm_context *ctx, const char *cond);
+int rsm_cond_broadcast_data(struct rsm_context *ctx,
+                            const char *cond,
+                            const char *data, size_t data_sz);
+int rsm_cond_current_value(struct rsm_context *ctx,
+                           const char *cond, uint64_t *state,
+                           const char **data, size_t *data_sz);
 
-void rsm_tick_interval(struct rsm_context* ctx, const char* func, uint64_t seconds);
+void rsm_tick_interval(struct rsm_context *ctx, const char *func, uint64_t seconds);
 
 #ifdef __cplusplus
 } /* extern "C" */

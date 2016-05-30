@@ -37,14 +37,14 @@ struct object_interface;
 
 struct rsm_context
 {
-    struct object_interface* obj_int;
-    int status;
-    char* output;
-    size_t output_sz;
+	struct object_interface *obj_int;
+	int status;
+	char *output;
+	size_t output_sz;
 };
 
-void rsm_context_init(struct rsm_context* ctx, struct object_interface* obj_int);
-void rsm_context_finish(struct rsm_context* ctx);
+void rsm_context_init(struct rsm_context *ctx, struct object_interface *obj_int);
+void rsm_context_finish(struct rsm_context *ctx);
 
 #ifdef __cplusplus
 } /* extern "C" */

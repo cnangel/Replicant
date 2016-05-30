@@ -32,19 +32,16 @@
 #include "common/generate_token.h"
 
 bool
-replicant :: generate_token(uint64_t* token)
+replicant :: generate_token(uint64_t *token)
 {
-    po6::io::fd sysrand(open("/dev/urandom", O_RDONLY));
-
-    if (sysrand.get() < 0)
-    {
-        return false;
-    }
-
-    if (sysrand.read(token, sizeof(*token)) != sizeof(*token))
-    {
-        return false;
-    }
-
-    return true;
+	po6::io::fd sysrand(open("/dev/urandom", O_RDONLY));
+	if (sysrand.get() < 0)
+	{
+		return false;
+	}
+	if (sysrand.read(token, sizeof(*token)) != sizeof(*token))
+	{
+		return false;
+	}
+	return true;
 }

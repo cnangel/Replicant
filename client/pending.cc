@@ -31,11 +31,11 @@
 using replicant::pending;
 
 pending :: pending(int64_t id,
-                   replicant_returncode* st)
-    : m_ref(0)
-    , m_client_visible_id(id)
-    , m_status(st)
-    , m_error()
+                   replicant_returncode *st)
+	: m_ref(0)
+	, m_client_visible_id(id)
+	, m_status(st)
+	, m_error()
 {
 }
 
@@ -43,22 +43,22 @@ pending :: ~pending() throw ()
 {
 }
 
-std::ostream&
-pending :: error(const char* file, size_t line)
+std::ostream &
+pending :: error(const char *file, size_t line)
 {
-    m_error.set_loc(file, line);
-    return m_error.set_msg();
+	m_error.set_loc(file, line);
+	return m_error.set_msg();
 }
 
 void
-pending :: set_error(const e::error& err)
+pending :: set_error(const e::error &err)
 {
-    m_error = err;
+	m_error = err;
 }
 
 void
 pending :: success()
 {
-    set_status(REPLICANT_SUCCESS);
-    m_error = e::error();
+	set_status(REPLICANT_SUCCESS);
+	m_error = e::error();
 }

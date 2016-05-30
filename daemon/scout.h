@@ -38,52 +38,52 @@ BEGIN_REPLICANT_NAMESPACE
 
 class scout
 {
-    public:
-        struct enqueued_proposal
-        {
-            enqueued_proposal();
-            enqueued_proposal(uint64_t s, uint64_t l, const e::slice& c);
-            ~enqueued_proposal() throw ();
+public:
+	struct enqueued_proposal
+	{
+		enqueued_proposal();
+		enqueued_proposal(uint64_t s, uint64_t l, const e::slice &c);
+		~enqueued_proposal() throw ();
 
-            uint64_t start;
-            uint64_t limit;
-            std::string command;
-        };
+		uint64_t start;
+		uint64_t limit;
+		std::string command;
+	};
 
-    public:
-        scout(const ballot& b, server_id* acceptors, size_t acceptors_sz);
-        ~scout() throw ();
+public:
+	scout(const ballot &b, server_id *acceptors, size_t acceptors_sz);
+	~scout() throw ();
 
-    public:
-        bool adopted() const;
-        const ballot& current_ballot() const { return m_ballot; }
-        const std::vector<server_id>& acceptors() const { return m_acceptors; }
-        const std::vector<server_id>& taken_up() const { return m_taken_up; }
-        std::vector<server_id> missing() const;
-        const std::vector<pvalue>& pvals() const { return m_pvals; }
-        bool take_up(server_id si, const pvalue* pvals, size_t pvals_sz);
-        void set_window(uint64_t s, uint64_t l) { m_start = s; m_limit = l; }
-        uint64_t window_start() const { return m_start; }
-        uint64_t window_limit() const { return m_limit; }
-        void enqueue(uint64_t start, uint64_t limit, const e::slice& command);
-        const std::vector<enqueued_proposal>& enqueued() const { return m_enqueued; }
+public:
+	bool adopted() const;
+	const ballot &current_ballot() const { return m_ballot; }
+	const std::vector<server_id> &acceptors() const { return m_acceptors; }
+	const std::vector<server_id> &taken_up() const { return m_taken_up; }
+	std::vector<server_id> missing() const;
+	const std::vector<pvalue> &pvals() const { return m_pvals; }
+	bool take_up(server_id si, const pvalue *pvals, size_t pvals_sz);
+	void set_window(uint64_t s, uint64_t l) { m_start = s; m_limit = l; }
+	uint64_t window_start() const { return m_start; }
+	uint64_t window_limit() const { return m_limit; }
+	void enqueue(uint64_t start, uint64_t limit, const e::slice &command);
+	const std::vector<enqueued_proposal> &enqueued() const { return m_enqueued; }
 
-    private:
-        const ballot m_ballot;
-        const std::vector<server_id> m_acceptors;
-        std::vector<server_id> m_taken_up;
-        std::vector<pvalue> m_pvals;
-        uint64_t m_start;
-        uint64_t m_limit;
-        std::vector<enqueued_proposal> m_enqueued;
+private:
+	const ballot m_ballot;
+	const std::vector<server_id> m_acceptors;
+	std::vector<server_id> m_taken_up;
+	std::vector<pvalue> m_pvals;
+	uint64_t m_start;
+	uint64_t m_limit;
+	std::vector<enqueued_proposal> m_enqueued;
 
-    private:
-        scout(const scout&);
-        scout& operator = (const scout&);
+private:
+	scout(const scout &);
+	scout &operator = (const scout &);
 };
 
-std::ostream&
-operator << (std::ostream& lhs, const scout& rhs);
+std::ostream &
+operator << (std::ostream &lhs, const scout &rhs);
 
 END_REPLICANT_NAMESPACE
 

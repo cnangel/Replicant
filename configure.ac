@@ -27,8 +27,8 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.67])
-AC_INIT([replicant], [0.9.dev], [robert@hyperdex.org])
+AC_PREREQ([2.59])
+AC_INIT([replicant], [0.8.3], [robert@hyperdex.org])
 m4_define([serial_tests], [
     m4_esyscmd([case `automake --version | head -n 1` in
                 *1.11*);;

@@ -37,27 +37,27 @@ BEGIN_REPLICANT_NAMESPACE
 
 class commander
 {
-    public:
-        commander(const pvalue& pval);
-        commander(const commander&);
-        ~commander() throw ();
+public:
+	commander(const pvalue &pval);
+	commander(const commander &);
+	~commander() throw ();
 
-    public:
-        const pvalue& pval() const { return m_pval; }
-        void set_ballot(const ballot& b) { m_pval.b = b; }
-        bool accepted_by(server_id si);
-        void accept(server_id si);
-        size_t accepted();
-        uint64_t timestamp(unsigned idx);
-        void timestamp(unsigned idx, uint64_t ts);
+public:
+	const pvalue &pval() const { return m_pval; }
+	void set_ballot(const ballot &b) { m_pval.b = b; }
+	bool accepted_by(server_id si);
+	void accept(server_id si);
+	size_t accepted();
+	uint64_t timestamp(unsigned idx);
+	void timestamp(unsigned idx, uint64_t ts);
 
-    public:
-        commander& operator = (const commander&);
+public:
+	commander &operator = (const commander &);
 
-    private:
-        pvalue m_pval;
-        std::vector<server_id> m_accepted_by;
-        uint64_t m_timestamps[REPLICANT_MAX_REPLICAS];
+private:
+	pvalue m_pval;
+	std::vector<server_id> m_accepted_by;
+	uint64_t m_timestamps[REPLICANT_MAX_REPLICAS];
 };
 
 END_REPLICANT_NAMESPACE

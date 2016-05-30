@@ -29,7 +29,7 @@
 #define replicant_namespace_h_
 
 #define BEGIN_REPLICANT_NAMESPACE \
-    namespace replicant __attribute__ ((visibility ("hidden"))) {
+	namespace replicant __attribute__ ((visibility ("hidden"))) {
 
 #define END_REPLICANT_NAMESPACE }
 

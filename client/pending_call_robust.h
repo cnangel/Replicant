@@ -35,32 +35,32 @@ BEGIN_REPLICANT_NAMESPACE
 
 class pending_call_robust : public pending_robust
 {
-    public:
-        pending_call_robust(int64_t id,
-                            const char* object,
-                            const char* func,
-                            const char* input, size_t input_sz,
-                            replicant_returncode* status,
-                            char** output, size_t* output_sz);
-        virtual ~pending_call_robust() throw ();
+public:
+	pending_call_robust(int64_t id,
+	                    const char *object,
+	                    const char *func,
+	                    const char *input, size_t input_sz,
+	                    replicant_returncode *status,
+	                    char **output, size_t *output_sz);
+	virtual ~pending_call_robust() throw ();
 
-    public:
-        virtual std::auto_ptr<e::buffer> request(uint64_t nonce);
-        virtual bool resend_on_failure();
-        virtual void handle_response(client* cl,
-                                     std::auto_ptr<e::buffer> msg,
-                                     e::unpacker up);
+public:
+	virtual std::auto_ptr<e::buffer> request(uint64_t nonce);
+	virtual bool resend_on_failure();
+	virtual void handle_response(client *cl,
+	                             std::auto_ptr<e::buffer> msg,
+	                             e::unpacker up);
 
-    private:
-        const std::string m_object;
-        const std::string m_func;
-        const std::string m_input;
-        char** m_output;
-        size_t* m_output_sz;
+private:
+	const std::string m_object;
+	const std::string m_func;
+	const std::string m_input;
+	char **m_output;
+	size_t *m_output_sz;
 
-    private:
-        pending_call_robust(const pending_call_robust&);
-        pending_call_robust& operator = (const pending_call_robust&);
+private:
+	pending_call_robust(const pending_call_robust &);
+	pending_call_robust &operator = (const pending_call_robust &);
 };
 
 END_REPLICANT_NAMESPACE

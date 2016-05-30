@@ -30,8 +30,8 @@
 
 using replicant::mapper;
 
-mapper :: mapper(configuration* c)
-    : m_c(c)
+mapper :: mapper(configuration *c)
+	: m_c(c)
 {
 }
 
@@ -40,16 +40,15 @@ mapper :: ~mapper() throw ()
 }
 
 bool
-mapper :: lookup(uint64_t si, po6::net::location* bound_to)
+mapper :: lookup(uint64_t si, po6::net::location *bound_to)
 {
-    for (size_t i = 0; i < m_c->servers().size(); ++i)
-    {
-        if (m_c->servers()[i].id.get() == si)
-        {
-            *bound_to = m_c->servers()[i].bind_to;
-            return true;
-        }
-    }
-
-    return false;
+	for (size_t i = 0; i < m_c->servers().size(); ++i)
+	{
+		if (m_c->servers()[i].id.get() == si)
+		{
+			*bound_to = m_c->servers()[i].bind_to;
+			return true;
+		}
+	}
+	return false;
 }

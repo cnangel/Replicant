@@ -35,25 +35,25 @@ BEGIN_REPLICANT_NAMESPACE
 
 class pending_generate_unique_number : public pending
 {
-    public:
-        pending_generate_unique_number(int64_t client_visible_id,
-                                       replicant_returncode* status,
-                                       uint64_t* number);
-        virtual ~pending_generate_unique_number() throw ();
+public:
+	pending_generate_unique_number(int64_t client_visible_id,
+	                               replicant_returncode *status,
+	                               uint64_t *number);
+	virtual ~pending_generate_unique_number() throw ();
 
-    public:
-        virtual std::auto_ptr<e::buffer> request(uint64_t nonce);
-        virtual bool resend_on_failure();
-        virtual void handle_response(client* cl,
-                                     std::auto_ptr<e::buffer> msg,
-                                     e::unpacker up);
+public:
+	virtual std::auto_ptr<e::buffer> request(uint64_t nonce);
+	virtual bool resend_on_failure();
+	virtual void handle_response(client *cl,
+	                             std::auto_ptr<e::buffer> msg,
+	                             e::unpacker up);
 
-    private:
-        uint64_t* m_number;
+private:
+	uint64_t *m_number;
 
-    private:
-        pending_generate_unique_number(const pending_generate_unique_number&);
-        pending_generate_unique_number& operator = (const pending_generate_unique_number&);
+private:
+	pending_generate_unique_number(const pending_generate_unique_number &);
+	pending_generate_unique_number &operator = (const pending_generate_unique_number &);
 };
 
 END_REPLICANT_NAMESPACE

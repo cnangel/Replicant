@@ -44,48 +44,48 @@ class commander;
 
 class leader
 {
-    public:
-        leader(const scout& s);
-        ~leader() throw ();
+public:
+	leader(const scout &s);
+	~leader() throw ();
 
-    public:
-        const ballot& current_ballot() const { return m_ballot; }
-        const std::vector<server_id>& acceptors() const { return m_acceptors; }
-        size_t quorum_size() const { return m_quorum; }
-        void send_all_proposals(daemon* d);
-        bool accept(server_id si, const pvalue& p);
-        void propose(daemon* d,
-                     uint64_t slot_start,
-                     uint64_t slot_limit,
-                     const std::string& c);
-        void set_window(daemon* d, uint64_t start, uint64_t limit);
-        void fill_window(daemon* d);
-        uint64_t window_start() const { return m_start; }
-        uint64_t window_limit() const { return m_limit; }
-        void garbage_collect(uint64_t below);
+public:
+	const ballot &current_ballot() const { return m_ballot; }
+	const std::vector<server_id> &acceptors() const { return m_acceptors; }
+	size_t quorum_size() const { return m_quorum; }
+	void send_all_proposals(daemon *d);
+	bool accept(server_id si, const pvalue &p);
+	void propose(daemon *d,
+	             uint64_t slot_start,
+	             uint64_t slot_limit,
+	             const std::string &c);
+	void set_window(daemon *d, uint64_t start, uint64_t limit);
+	void fill_window(daemon *d);
+	uint64_t window_start() const { return m_start; }
+	uint64_t window_limit() const { return m_limit; }
+	void garbage_collect(uint64_t below);
 
-    private:
-        void adjust_next();
-        void insert_nop(daemon* d, uint64_t slot);
-        void send_proposal(daemon* d, commander* c);
+private:
+	void adjust_next();
+	void insert_nop(daemon *d, uint64_t slot);
+	void send_proposal(daemon *d, commander *c);
 
-    private:
-        typedef std::map<uint64_t, commander> commander_map_t;
-        const ballot m_ballot;
-        const std::vector<server_id> m_acceptors;
-        const unsigned m_quorum;
-        commander_map_t m_commanders;
-        uint64_t m_start;
-        uint64_t m_limit;
-        uint64_t m_next;
+private:
+	typedef std::map<uint64_t, commander> commander_map_t;
+	const ballot m_ballot;
+	const std::vector<server_id> m_acceptors;
+	const unsigned m_quorum;
+	commander_map_t m_commanders;
+	uint64_t m_start;
+	uint64_t m_limit;
+	uint64_t m_next;
 
-    private:
-        leader(const leader&);
-        leader& operator = (const leader&);
+private:
+	leader(const leader &);
+	leader &operator = (const leader &);
 };
 
-std::ostream&
-operator << (std::ostream& lhs, const leader& rhs);
+std::ostream &
+operator << (std::ostream &lhs, const leader &rhs);
 
 END_REPLICANT_NAMESPACE
 

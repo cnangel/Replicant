@@ -33,18 +33,18 @@
 
 using replicant::snapshot;
 
-snapshot :: snapshot(uint64_t up_to, robust_history* rh)
-    : m_ref(0)
-    , m_up_to(up_to)
-    , m_mtx()
-    , m_cond(&m_mtx)
-    , m_failed()
-    , m_history(rh)
-    , m_objects()
-    , m_serialized_prefix()
-    , m_serialized_objects()
-    , m_obj_packer(&m_serialized_objects)
-    , m_serialized_altogether()
+snapshot :: snapshot(uint64_t up_to, robust_history *rh)
+	: m_ref(0)
+	, m_up_to(up_to)
+	, m_mtx()
+	, m_cond(&m_mtx)
+	, m_failed()
+	, m_history(rh)
+	, m_objects()
+	, m_serialized_prefix()
+	, m_serialized_objects()
+	, m_obj_packer(&m_serialized_objects)
+	, m_serialized_altogether()
 {
 }
 
@@ -55,78 +55,73 @@ snapshot :: ~snapshot() throw ()
 void
 snapshot :: wait()
 {
-    po6::threads::mutex::hold hold(&m_mtx);
-
-    while (!done_condition())
-    {
-        m_cond.wait();
-    }
+	po6::threads::mutex::hold hold(&m_mtx);
+	while (!done_condition())
+	{
+		m_cond.wait();
+	}
 }
 
 void
-snapshot :: replica_internals(const e::slice& replica)
+snapshot :: replica_internals(const e::slice &replica)
 {
-    m_serialized_prefix.assign(replica.cdata(), replica.size());
+	m_serialized_prefix.assign(replica.cdata(), replica.size());
 }
 
 void
-snapshot :: start_object(const std::string& name)
+snapshot :: start_object(const std::string &name)
 {
-    po6::threads::mutex::hold hold(&m_mtx);
-    m_objects.insert(name);
+	po6::threads::mutex::hold hold(&m_mtx);
+	m_objects.insert(name);
 }
 
 void
-snapshot :: finish_object(const std::string& name, const std::string& snap)
+snapshot :: finish_object(const std::string &name, const std::string &snap)
 {
-    po6::threads::mutex::hold hold(&m_mtx);
-    std::set<std::string>::iterator it = m_objects.find(name);
-
-    if (it != m_objects.end())
-    {
-        m_objects.erase(it);
-        m_obj_packer = m_obj_packer << e::slice(name) << e::slice(snap);
-    }
-
-    m_cond.broadcast();
+	po6::threads::mutex::hold hold(&m_mtx);
+	std::set<std::string>::iterator it = m_objects.find(name);
+	if (it != m_objects.end())
+	{
+		m_objects.erase(it);
+		m_obj_packer = m_obj_packer << e::slice(name) << e::slice(snap);
+	}
+	m_cond.broadcast();
 }
 
 void
 snapshot :: abort_snapshot()
 {
-    po6::threads::mutex::hold hold(&m_mtx);
-
-    if (!m_objects.empty())
-    {
-        m_failed = true;
-    }
-
-    m_cond.broadcast();
+	po6::threads::mutex::hold hold(&m_mtx);
+	if (!m_objects.empty())
+	{
+		m_failed = true;
+	}
+	m_cond.broadcast();
 }
 
 bool
 snapshot :: done()
 {
-    po6::threads::mutex::hold hold(&m_mtx);
-    return done_condition();
+	po6::threads::mutex::hold hold(&m_mtx);
+	return done_condition();
 }
 
-const std::string&
+const std::string &
 snapshot :: contents()
 {
-    po6::threads::mutex::hold hold(&m_mtx);
-    m_serialized_altogether = m_serialized_prefix;
-    robust_history rh;
-    m_history->copy_up_to(&rh, m_up_to);
-    std::string tmp;
-    e::packer(&tmp) << rh;
-    m_serialized_altogether += tmp;
-    m_serialized_altogether += m_serialized_objects;
-    return m_serialized_altogether;
+	po6::threads::mutex::hold hold(&m_mtx);
+	m_serialized_altogether = m_serialized_prefix;
+	robust_history rh;
+	m_history->copy_up_to(&rh, m_up_to);
+	std::string tmp;
+	e::packer(&tmp) << rh;
+	m_serialized_altogether += tmp;
+	m_serialized_altogether += m_serialized_objects;
+	return m_serialized_altogether;
 }
 
 bool
 snapshot :: done_condition()
 {
-    return m_failed || m_objects.empty();
+	return m_failed || m_objects.empty();
 }

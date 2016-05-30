@@ -36,29 +36,28 @@
 using replicant::pending_call;
 
 pending_call :: pending_call(int64_t id,
-                             const char* object,
-                             const char* func,
-                             const char* input, size_t input_sz,
+                             const char *object,
+                             const char *func,
+                             const char *input, size_t input_sz,
                              bool idempotent,
-                             replicant_returncode* st,
-                             char** output, size_t* output_sz)
-    : pending(id, st)
-    , m_object(object)
-    , m_func(func)
-    , m_input(input, input_sz)
-    , m_idempotent(idempotent)
-    , m_output(output)
-    , m_output_sz(output_sz)
+                             replicant_returncode *st,
+                             char **output, size_t *output_sz)
+	: pending(id, st)
+	, m_object(object)
+	, m_func(func)
+	, m_input(input, input_sz)
+	, m_idempotent(idempotent)
+	, m_output(output)
+	, m_output_sz(output_sz)
 {
-    if (m_output)
-    {
-        *m_output = NULL;
-    }
-
-    if (m_output_sz)
-    {
-        *m_output_sz = 0;
-    }
+	if (m_output)
+	{
+		*m_output = NULL;
+	}
+	if (m_output_sz)
+	{
+		*m_output_sz = 0;
+	}
 }
 
 pending_call :: ~pending_call() throw ()
@@ -68,68 +67,63 @@ pending_call :: ~pending_call() throw ()
 std::auto_ptr<e::buffer>
 pending_call :: request(uint64_t nonce)
 {
-    e::slice obj(m_object);
-    e::slice func(m_func);
-    e::slice input(m_input);
-    const size_t sz = BUSYBEE_HEADER_SIZE
-                    + pack_size(REPLNET_CALL)
-                    + sizeof(uint64_t)
-                    + pack_size(obj)
-                    + pack_size(func)
-                    + pack_size(input);
-    std::auto_ptr<e::buffer> msg(e::buffer::create(sz));
-    msg->pack_at(BUSYBEE_HEADER_SIZE)
-        << REPLNET_CALL << nonce << obj << func << input;
-    return msg;
+	e::slice obj(m_object);
+	e::slice func(m_func);
+	e::slice input(m_input);
+	const size_t sz = BUSYBEE_HEADER_SIZE
+	                  + pack_size(REPLNET_CALL)
+	                  + sizeof(uint64_t)
+	                  + pack_size(obj)
+	                  + pack_size(func)
+	                  + pack_size(input);
+	std::auto_ptr<e::buffer> msg(e::buffer::create(sz));
+	msg->pack_at(BUSYBEE_HEADER_SIZE)
+	        << REPLNET_CALL << nonce << obj << func << input;
+	return msg;
 }
 
 bool
 pending_call :: resend_on_failure()
 {
-    return m_idempotent;
+	return m_idempotent;
 }
 
 void
-pending_call :: handle_response(client*, std::auto_ptr<e::buffer>, e::unpacker up)
+pending_call :: handle_response(client *, std::auto_ptr<e::buffer>, e::unpacker up)
 {
-    replicant_returncode st;
-    e::slice output;
-    up = up >> st >> output;
-
-    if (up.error())
-    {
-        PENDING_ERROR(SERVER_ERROR) << "received bad call response";
-    }
-    else if (st == REPLICANT_SUCCESS)
-    {
-        this->success();
-
-        if (output.size() && m_output)
-        {
-            *m_output = static_cast<char*>(malloc(output.size()));
-
-            if (!*m_output)
-            {
-                this->set_status(REPLICANT_SEE_ERRNO);
-                return;
-            }
-
-            if (m_output_sz)
-            {
-                *m_output_sz = output.size();
-            }
-
-            memmove(*m_output, output.data(), output.size());
-        }
-    }
-    else if (st == REPLICANT_MAYBE && output.empty())
-    {
-        this->set_status(st);
-        this->error(__FILE__, __LINE__) << "operation may or may not have happened";
-    }
-    else
-    {
-        this->set_status(st);
-        this->error(__FILE__, __LINE__) << output.str();
-    }
+	replicant_returncode st;
+	e::slice output;
+	up = up >> st >> output;
+	if (up.error())
+	{
+		PENDING_ERROR(SERVER_ERROR) << "received bad call response";
+	}
+	else if (st == REPLICANT_SUCCESS)
+	{
+		this->success();
+		if (output.size() && m_output)
+		{
+			*m_output = static_cast<char *>(malloc(output.size()));
+			if (!*m_output)
+			{
+				this->set_status(REPLICANT_SEE_ERRNO);
+				return;
+			}
+			if (m_output_sz)
+			{
+				*m_output_sz = output.size();
+			}
+			memmove(*m_output, output.data(), output.size());
+		}
+	}
+	else if (st == REPLICANT_MAYBE && output.empty())
+	{
+		this->set_status(st);
+		this->error(__FILE__, __LINE__) << "operation may or may not have happened";
+	}
+	else
+	{
+		this->set_status(st);
+		this->error(__FILE__, __LINE__) << output.str();
+	}
 }

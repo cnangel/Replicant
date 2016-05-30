@@ -33,24 +33,24 @@
 
 using replicant::commander;
 
-commander :: commander(const pvalue& p)
-    : m_pval(p)
-    , m_accepted_by()
+commander :: commander(const pvalue &p)
+	: m_pval(p)
+	, m_accepted_by()
 {
-    for (size_t i = 0; i < REPLICANT_MAX_REPLICAS; ++i)
-    {
-        m_timestamps[i] = 0;
-    }
+	for (size_t i = 0; i < REPLICANT_MAX_REPLICAS; ++i)
+	{
+		m_timestamps[i] = 0;
+	}
 }
 
-commander :: commander(const commander& other)
-    : m_pval(other.m_pval)
-    , m_accepted_by(other.m_accepted_by)
+commander :: commander(const commander &other)
+	: m_pval(other.m_pval)
+	, m_accepted_by(other.m_accepted_by)
 {
-    for (size_t i = 0; i < REPLICANT_MAX_REPLICAS; ++i)
-    {
-        m_timestamps[i] = other.m_timestamps[i];
-    }
+	for (size_t i = 0; i < REPLICANT_MAX_REPLICAS; ++i)
+	{
+		m_timestamps[i] = other.m_timestamps[i];
+	}
 }
 
 commander :: ~commander() throw ()
@@ -60,48 +60,46 @@ commander :: ~commander() throw ()
 bool
 commander :: accepted_by(server_id si)
 {
-    return std::find(m_accepted_by.begin(), m_accepted_by.end(), si) != m_accepted_by.end();
+	return std::find(m_accepted_by.begin(), m_accepted_by.end(), si) != m_accepted_by.end();
 }
 
 void
 commander :: accept(server_id si)
 {
-    if (!accepted_by(si))
-    {
-        m_accepted_by.push_back(si);
-    }
+	if (!accepted_by(si))
+	{
+		m_accepted_by.push_back(si);
+	}
 }
 
 size_t
 commander :: accepted()
 {
-    return m_accepted_by.size();
+	return m_accepted_by.size();
 }
 
 uint64_t
 commander :: timestamp(unsigned idx)
 {
-    assert(idx < REPLICANT_MAX_REPLICAS);
-    return m_timestamps[idx];
+	assert(idx < REPLICANT_MAX_REPLICAS);
+	return m_timestamps[idx];
 }
 
 void
 commander :: timestamp(unsigned idx, uint64_t ts)
 {
-    assert(idx < REPLICANT_MAX_REPLICAS);
-    m_timestamps[idx] = ts;
+	assert(idx < REPLICANT_MAX_REPLICAS);
+	m_timestamps[idx] = ts;
 }
 
-commander&
-commander :: operator = (const commander& rhs)
+commander &
+commander :: operator = (const commander &rhs)
 {
-    m_pval = rhs.m_pval;
-    m_accepted_by = rhs.m_accepted_by;
-
-    for (size_t i = 0; i < REPLICANT_MAX_REPLICAS; ++i)
-    {
-        m_timestamps[i] = rhs.m_timestamps[i];
-    }
-
-    return *this;
+	m_pval = rhs.m_pval;
+	m_accepted_by = rhs.m_accepted_by;
+	for (size_t i = 0; i < REPLICANT_MAX_REPLICAS; ++i)
+	{
+		m_timestamps[i] = rhs.m_timestamps[i];
+	}
+	return *this;
 }

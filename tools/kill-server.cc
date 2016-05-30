@@ -35,61 +35,53 @@
 #include "tools/common.h"
 
 int
-main(int argc, const char* argv[])
+main(int argc, const char *argv[])
 {
-    connect_opts conn;
-    e::argparser ap;
-    ap.autohelp();
-    ap.option_string("[OPTIONS] <token>");
-    ap.add("Connect to a cluster:", conn.parser());
-
-    if (!ap.parse(argc, argv))
-    {
-        return EXIT_FAILURE;
-    }
-
-    if (ap.args_sz() != 1)
-    {
-        std::cerr << "command takes one server's token as an argument\n" << std::endl;
-        ap.usage();
-        return EXIT_FAILURE;
-    }
-
-    if (!conn.validate())
-    {
-        std::cerr << "invalid host:port specification\n" << std::endl;
-        ap.usage();
-        return EXIT_FAILURE;
-    }
-
-    char* end = NULL;
-    errno = 0;
-    uint64_t token = strtoull(ap.args()[0], &end, 10);
-
-    if (token == 0 || errno != 0 || *end != '\0')
-    {
-        std::cerr << token << std::endl;
-        std::cerr << "invalid token\n" << std::endl;
-        ap.usage();
-        return EXIT_FAILURE;
-    }
-
-    try
-    {
-        replicant_client* r = replicant_client_create(conn.host(), conn.port());
-        replicant_returncode re = REPLICANT_GARBAGE;
-        int64_t rid = replicant_client_kill_server(r, token, &re);
-
-        if (!cli_finish(r, rid, &re))
-        {
-            return EXIT_FAILURE;
-        }
-
-        return EXIT_SUCCESS;
-    }
-    catch (std::exception& e)
-    {
-        std::cerr << "error: " << e.what() << std::endl;
-        return EXIT_FAILURE;
-    }
+	connect_opts conn;
+	e::argparser ap;
+	ap.autohelp();
+	ap.option_string("[OPTIONS] <token>");
+	ap.add("Connect to a cluster:", conn.parser());
+	if (!ap.parse(argc, argv))
+	{
+		return EXIT_FAILURE;
+	}
+	if (ap.args_sz() != 1)
+	{
+		std::cerr << "command takes one server's token as an argument\n" << std::endl;
+		ap.usage();
+		return EXIT_FAILURE;
+	}
+	if (!conn.validate())
+	{
+		std::cerr << "invalid host:port specification\n" << std::endl;
+		ap.usage();
+		return EXIT_FAILURE;
+	}
+	char *end = NULL;
+	errno = 0;
+	uint64_t token = strtoull(ap.args()[0], &end, 10);
+	if (token == 0 || errno != 0 || *end != '\0')
+	{
+		std::cerr << token << std::endl;
+		std::cerr << "invalid token\n" << std::endl;
+		ap.usage();
+		return EXIT_FAILURE;
+	}
+	try
+	{
+		replicant_client *r = replicant_client_create(conn.host(), conn.port());
+		replicant_returncode re = REPLICANT_GARBAGE;
+		int64_t rid = replicant_client_kill_server(r, token, &re);
+		if (!cli_finish(r, rid, &re))
+		{
+			return EXIT_FAILURE;
+		}
+		return EXIT_SUCCESS;
+	}
+	catch (std::exception &e)
+	{
+		std::cerr << "error: " << e.what() << std::endl;
+		return EXIT_FAILURE;
+	}
 }

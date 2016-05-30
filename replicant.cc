@@ -36,27 +36,27 @@
 #include <e/subcommand.h>
 
 int
-main(int argc, const char* argv[])
+main(int argc, const char *argv[])
 {
-    std::vector<e::subcommand> cmds;
-    cmds.push_back(e::subcommand("daemon",            "Start a new Replicant daemon"));
-    cmds.push_back(e::subcommand("new-object",        "Create a new replicated object"));
-    cmds.push_back(e::subcommand("del-object",        "Destroy an existing replicated object"));
-    cmds.push_back(e::subcommand("kill-object",       "Kill an existing object so it will be restarted"));
-    cmds.push_back(e::subcommand("backup-object",     "Create a backup of a replicated object"));
-    cmds.push_back(e::subcommand("restore-object",    "Restore a replicated object from backup"));
-    cmds.push_back(e::subcommand("list-objects",      "List all objects hosted by the cluster"));
-    cmds.push_back(e::subcommand("poke",              "Poke the cluster to test for liveness"));
-    cmds.push_back(e::subcommand("conn-str",          "Output a connection string for the current cluster"));
-    cmds.push_back(e::subcommand("kill-server",       "Remove a server from the cluster"));
-    cmds.push_back(e::subcommand("server-status",     "Directly check the status of a server"));
-    cmds.push_back(e::subcommand("availability-check","Check if the cluster consists of N or more servers"));
-    cmds.push_back(e::subcommand("generate-unique-number", "Generate a unique number, using the cluster to guarantee its uniqueness"));
-    cmds.push_back(e::subcommand("debug",             "Debug tools for replicant developers"));
-    return dispatch_to_subcommands(argc, argv,
-                                   "replicant", "Replicant",
-                                   PACKAGE_VERSION,
-                                   "replicant-",
-                                   "REPLICANT_EXEC_PATH", REPLICANT_EXEC_DIR,
-                                   &cmds.front(), cmds.size());
+	std::vector<e::subcommand> cmds;
+	cmds.push_back(e::subcommand("daemon",            "Start a new Replicant daemon"));
+	cmds.push_back(e::subcommand("new-object",        "Create a new replicated object"));
+	cmds.push_back(e::subcommand("del-object",        "Destroy an existing replicated object"));
+	cmds.push_back(e::subcommand("kill-object",       "Kill an existing object so it will be restarted"));
+	cmds.push_back(e::subcommand("backup-object",     "Create a backup of a replicated object"));
+	cmds.push_back(e::subcommand("restore-object",    "Restore a replicated object from backup"));
+	cmds.push_back(e::subcommand("list-objects",      "List all objects hosted by the cluster"));
+	cmds.push_back(e::subcommand("poke",              "Poke the cluster to test for liveness"));
+	cmds.push_back(e::subcommand("conn-str",          "Output a connection string for the current cluster"));
+	cmds.push_back(e::subcommand("kill-server",       "Remove a server from the cluster"));
+	cmds.push_back(e::subcommand("server-status",     "Directly check the status of a server"));
+	cmds.push_back(e::subcommand("availability-check", "Check if the cluster consists of N or more servers"));
+	cmds.push_back(e::subcommand("generate-unique-number", "Generate a unique number, using the cluster to guarantee its uniqueness"));
+	cmds.push_back(e::subcommand("debug",             "Debug tools for replicant developers"));
+	return dispatch_to_subcommands(argc, argv,
+	                               "replicant", "Replicant",
+	                               PACKAGE_VERSION,
+	                               "replicant-",
+	                               "REPLICANT_EXEC_PATH", REPLICANT_EXEC_DIR,
+	                               &cmds.front(), cmds.size());
 }

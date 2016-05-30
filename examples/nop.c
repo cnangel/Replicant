@@ -29,40 +29,42 @@
 /* Replicant */
 #include <rsm.h>
 
-void*
-nop_create(struct rsm_context* ctx)
+void *
+nop_create(struct rsm_context *ctx)
 {
-    return (void*) -1;
+	return (void *) - 1;
 }
 
-void*
-nop_recreate(struct rsm_context* ctx,
-             const char* data, size_t data_sz)
+void *
+nop_recreate(struct rsm_context *ctx,
+             const char *data, size_t data_sz)
 {
-    return (void*) -1;
+	return (void *) - 1;
 }
 
 int
-nop_snapshot(struct rsm_context* ctx,
-             void* obj,
-             char** data, size_t* data_sz)
+nop_snapshot(struct rsm_context *ctx,
+             void *obj,
+             char **data, size_t *data_sz)
 {
-    *data = NULL;
-    *data_sz = 0;
-    return 0;
+	*data = NULL;
+	*data_sz = 0;
+	return 0;
 }
 
 void
-nop_nop(struct rsm_context* ctx,
-        void* obj,
-        const char* data, size_t data_sz)
+nop_nop(struct rsm_context *ctx,
+        void *obj,
+        const char *data, size_t data_sz)
 {
 }
 
-struct state_machine rsm = {
-    nop_create,
-    nop_recreate,
-    nop_snapshot,
-    {{"nop", nop_nop},
-     {NULL, NULL}}
+struct state_machine rsm =
+{
+	nop_create,
+	nop_recreate,
+	nop_snapshot,
+	{	{"nop", nop_nop},
+		{NULL, NULL}
+	}
 };

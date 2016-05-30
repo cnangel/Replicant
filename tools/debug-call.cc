@@ -35,83 +35,73 @@
 #include "tools/common.h"
 
 int
-main(int argc, const char* argv[])
+main(int argc, const char *argv[])
 {
-    const char* obj = "replicant";
-    const char* func = "nop";
-    bool idempotent = false;
-    bool robust = false;
-    connect_opts conn;
-    e::argparser ap;
-    ap.autohelp();
-    ap.option_string("[OPTIONS]");
-    ap.arg().name('o', "object")
-            .description("object that maintains the condition")
-            .metavar("OBJ").as_string(&obj);
-    ap.arg().name('f', "func")
-            .description("function call")
-            .metavar("FUNC").as_string(&func);
-    ap.arg().name('i', "idempotent")
-            .description("use the idempotent method")
-            .set_true(&idempotent);
-    ap.arg().name('r', "robust")
-            .description("use the robust method")
-            .set_true(&robust);
-    ap.add("Connect to a cluster:", conn.parser());
-
-    if (!ap.parse(argc, argv))
-    {
-        return EXIT_FAILURE;
-    }
-
-    if (ap.args_sz() != 0)
-    {
-        std::cerr << "command takes no positional arguments\n" << std::endl;
-        ap.usage();
-        return EXIT_FAILURE;
-    }
-
-    if (!conn.validate())
-    {
-        std::cerr << "invalid host:port specification\n" << std::endl;
-        ap.usage();
-        return EXIT_FAILURE;
-    }
-
-    unsigned flags = 0;
-    flags |= idempotent ? REPLICANT_CALL_IDEMPOTENT : 0;
-    flags |= robust ? REPLICANT_CALL_ROBUST : 0;
-
-    try
-    {
-        replicant_client* r = replicant_client_create(conn.host(), conn.port());
-        std::string s;
-
-        while (std::getline(std::cin, s))
-        {
-            replicant_returncode re = REPLICANT_GARBAGE;
-            char* output = NULL;
-            size_t output_sz = 0;
-            int64_t rid = replicant_client_call(r, obj, func, s.data(), s.size(), flags, &re, &output, &output_sz);
-
-            if (!cli_finish(r, rid, &re))
-            {
-                return EXIT_FAILURE;
-            }
-
-            std::cout << e::strescape(std::string(output, output_sz)) << std::endl;
-
-            if (output)
-            {
-                free(output);
-            }
-        }
-
-        return EXIT_SUCCESS;
-    }
-    catch (std::exception& e)
-    {
-        std::cerr << "error: " << e.what() << std::endl;
-        return EXIT_FAILURE;
-    }
+	const char *obj = "replicant";
+	const char *func = "nop";
+	bool idempotent = false;
+	bool robust = false;
+	connect_opts conn;
+	e::argparser ap;
+	ap.autohelp();
+	ap.option_string("[OPTIONS]");
+	ap.arg().name('o', "object")
+	.description("object that maintains the condition")
+	.metavar("OBJ").as_string(&obj);
+	ap.arg().name('f', "func")
+	.description("function call")
+	.metavar("FUNC").as_string(&func);
+	ap.arg().name('i', "idempotent")
+	.description("use the idempotent method")
+	.set_true(&idempotent);
+	ap.arg().name('r', "robust")
+	.description("use the robust method")
+	.set_true(&robust);
+	ap.add("Connect to a cluster:", conn.parser());
+	if (!ap.parse(argc, argv))
+	{
+		return EXIT_FAILURE;
+	}
+	if (ap.args_sz() != 0)
+	{
+		std::cerr << "command takes no positional arguments\n" << std::endl;
+		ap.usage();
+		return EXIT_FAILURE;
+	}
+	if (!conn.validate())
+	{
+		std::cerr << "invalid host:port specification\n" << std::endl;
+		ap.usage();
+		return EXIT_FAILURE;
+	}
+	unsigned flags = 0;
+	flags |= idempotent ? REPLICANT_CALL_IDEMPOTENT : 0;
+	flags |= robust ? REPLICANT_CALL_ROBUST : 0;
+	try
+	{
+		replicant_client *r = replicant_client_create(conn.host(), conn.port());
+		std::string s;
+		while (std::getline(std::cin, s))
+		{
+			replicant_returncode re = REPLICANT_GARBAGE;
+			char *output = NULL;
+			size_t output_sz = 0;
+			int64_t rid = replicant_client_call(r, obj, func, s.data(), s.size(), flags, &re, &output, &output_sz);
+			if (!cli_finish(r, rid, &re))
+			{
+				return EXIT_FAILURE;
+			}
+			std::cout << e::strescape(std::string(output, output_sz)) << std::endl;
+			if (output)
+			{
+				free(output);
+			}
+		}
+		return EXIT_SUCCESS;
+	}
+	catch (std::exception &e)
+	{
+		std::cerr << "error: " << e.what() << std::endl;
+		return EXIT_FAILURE;
+	}
 }

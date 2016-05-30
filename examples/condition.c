@@ -33,42 +33,44 @@
 /* Replicant */
 #include <rsm.h>
 
-void*
-condition_create(struct rsm_context* ctx)
+void *
+condition_create(struct rsm_context *ctx)
 {
-    rsm_cond_create(ctx, "cond");
-    return (void*) -1;
+	rsm_cond_create(ctx, "cond");
+	return (void *) - 1;
 }
 
-void*
-condition_recreate(struct rsm_context* ctx,
-                   const char* data, size_t data_sz)
+void *
+condition_recreate(struct rsm_context *ctx,
+                   const char *data, size_t data_sz)
 {
-    return (void*) -1;
+	return (void *) - 1;
 }
 
 int
-condition_snapshot(struct rsm_context* ctx,
-                   void* obj,
-                   char** data, size_t* data_sz)
+condition_snapshot(struct rsm_context *ctx,
+                   void *obj,
+                   char **data, size_t *data_sz)
 {
-    *data = NULL;
-    *data_sz = 0;
-    return 0;
+	*data = NULL;
+	*data_sz = 0;
+	return 0;
 }
 
 void
-condition_broadcast(struct rsm_context* ctx,
-                    void* obj,
-                    const char* data, size_t data_sz)
+condition_broadcast(struct rsm_context *ctx,
+                    void *obj,
+                    const char *data, size_t data_sz)
 {
-    rsm_cond_broadcast_data(ctx, "cond", data, data_sz);
+	rsm_cond_broadcast_data(ctx, "cond", data, data_sz);
 }
 
-struct state_machine rsm = {
-    condition_create,
-    condition_recreate,
-    condition_snapshot,
-    {{"broadcast", condition_broadcast},
-     {NULL, NULL}}
+struct state_machine rsm =
+{
+	condition_create,
+	condition_recreate,
+	condition_snapshot,
+	{	{"broadcast", condition_broadcast},
+		{NULL, NULL}
+	}
 };

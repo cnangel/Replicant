@@ -39,19 +39,19 @@ BEGIN_REPLICANT_NAMESPACE
 
 class mapper : public busybee_mapper
 {
-    public:
-        mapper(configuration* c);
-        ~mapper() throw ();
+public:
+	mapper(configuration *c);
+	~mapper() throw ();
 
-    public:
-        virtual bool lookup(uint64_t si, po6::net::location* bound_to);
+public:
+	virtual bool lookup(uint64_t si, po6::net::location *bound_to);
 
-    private:
-        configuration* m_c;
+private:
+	configuration *m_c;
 
-    private:
-        mapper(const mapper&);
-        mapper& operator = (const mapper&);
+private:
+	mapper(const mapper &);
+	mapper &operator = (const mapper &);
 };
 
 END_REPLICANT_NAMESPACE

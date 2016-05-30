@@ -33,15 +33,15 @@ using replicant::unordered_command;
 unordered_command :: unordered_command(server_id obo,
                                        uint64_t rn,
                                        slot_type t,
-                                       const std::string& c)
-    : m_on_behalf_of(obo)
-    , m_request_nonce(rn)
-    , m_type(t)
-    , m_command(c)
-    , m_command_nonce(0)
-    , m_last_used_ballot()
-    , m_lowest_possible_slot(0)
-    , m_robust(false)
+                                       const std::string &c)
+	: m_on_behalf_of(obo)
+	, m_request_nonce(rn)
+	, m_type(t)
+	, m_command(c)
+	, m_command_nonce(0)
+	, m_last_used_ballot()
+	, m_lowest_possible_slot(0)
+	, m_robust(false)
 {
 }
 
@@ -52,20 +52,20 @@ unordered_command :: ~unordered_command() throw ()
 void
 unordered_command :: set_command_nonce(uint64_t cn)
 {
-    assert(m_command_nonce == 0);
-    m_command_nonce = cn;
+	assert(m_command_nonce == 0);
+	m_command_nonce = cn;
 }
 
 void
-unordered_command :: set_last_used_ballot(const ballot& b)
+unordered_command :: set_last_used_ballot(const ballot &b)
 {
-    m_last_used_ballot = b;
+	m_last_used_ballot = b;
 }
 
 void
 unordered_command :: set_lowest_possible_slot(uint64_t slot)
 {
-    assert(!m_robust);
-    assert(m_lowest_possible_slot <= slot);
-    m_lowest_possible_slot = slot;
+	assert(!m_robust);
+	assert(m_lowest_possible_slot <= slot);
+	m_lowest_possible_slot = slot;
 }

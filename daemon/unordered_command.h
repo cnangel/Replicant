@@ -38,44 +38,44 @@ BEGIN_REPLICANT_NAMESPACE
 
 class unordered_command
 {
-    public:
-        unordered_command(server_id on_behalf_of,
-                          uint64_t request_nonce,
-                          slot_type t,
-                          const std::string& command);
-        virtual ~unordered_command() throw ();
+public:
+	unordered_command(server_id on_behalf_of,
+	                  uint64_t request_nonce,
+	                  slot_type t,
+	                  const std::string &command);
+	virtual ~unordered_command() throw ();
 
-    public:
-        server_id on_behalf_of() const { return m_on_behalf_of; }
-        uint64_t request_nonce() const { return m_request_nonce; }
-        slot_type type() const { return m_type; }
-        const std::string& command() const { return m_command; }
-        uint64_t command_nonce() const { return m_command_nonce; }
-        void set_command_nonce(uint64_t command_nonce);
+public:
+	server_id on_behalf_of() const { return m_on_behalf_of; }
+	uint64_t request_nonce() const { return m_request_nonce; }
+	slot_type type() const { return m_type; }
+	const std::string &command() const { return m_command; }
+	uint64_t command_nonce() const { return m_command_nonce; }
+	void set_command_nonce(uint64_t command_nonce);
 
-        const ballot& last_used_ballot() const { return m_last_used_ballot; }
-        void set_last_used_ballot(const ballot& b);
+	const ballot &last_used_ballot() const { return m_last_used_ballot; }
+	void set_last_used_ballot(const ballot &b);
 
-        uint64_t lowest_possible_slot() const { return m_lowest_possible_slot; }
-        void set_lowest_possible_slot(uint64_t slot);
+	uint64_t lowest_possible_slot() const { return m_lowest_possible_slot; }
+	void set_lowest_possible_slot(uint64_t slot);
 
-        bool robust() const { return m_robust; }
-        void set_robust() { m_robust = true; }
+	bool robust() const { return m_robust; }
+	void set_robust() { m_robust = true; }
 
-    private:
-        const server_id m_on_behalf_of;
-        const uint64_t m_request_nonce;
-        const slot_type m_type;
-        const std::string m_command;
-        uint64_t m_command_nonce;
-        ballot m_last_used_ballot;
-        uint64_t m_lowest_possible_slot;
-        bool m_robust;
+private:
+	const server_id m_on_behalf_of;
+	const uint64_t m_request_nonce;
+	const slot_type m_type;
+	const std::string m_command;
+	uint64_t m_command_nonce;
+	ballot m_last_used_ballot;
+	uint64_t m_lowest_possible_slot;
+	bool m_robust;
 
-    // noncopyable
-    private:
-        unordered_command(const unordered_command&);
-        unordered_command& operator = (const unordered_command&);
+	// noncopyable
+private:
+	unordered_command(const unordered_command &);
+	unordered_command &operator = (const unordered_command &);
 };
 
 END_REPLICANT_NAMESPACE

@@ -43,69 +43,69 @@ extern "C"
 
 struct object_interface;
 
-struct object_interface* object_interface_create(int fd);
-void object_interface_destroy(struct object_interface* obj_int);
+struct object_interface *object_interface_create(int fd);
+void object_interface_destroy(struct object_interface *obj_int);
 
-void object_permanent_error(struct object_interface* obj_int, const char* format, ...) __attribute__ ((noreturn));
+void object_permanent_error(struct object_interface *obj_int, const char *format, ...) __attribute__ ((noreturn));
 
 enum action_t
 {
-    ACTION_CTOR = 1,
-    ACTION_RTOR = 2,
-    ACTION_COMMAND  = 3,
-    ACTION_SNAPSHOT = 4,
-    ACTION_NOP = 5,
-    ACTION_SHUTDOWN = 16
+	ACTION_CTOR = 1,
+	ACTION_RTOR = 2,
+	ACTION_COMMAND  = 3,
+	ACTION_SNAPSHOT = 4,
+	ACTION_NOP = 5,
+	ACTION_SHUTDOWN = 16
 };
 
-int object_next_action(struct object_interface* obj_int, enum action_t* action);
+int object_next_action(struct object_interface *obj_int, enum action_t *action);
 
 struct command
 {
-    const char* func;
-    const char* input;
-    size_t input_sz;
+	const char *func;
+	const char *input;
+	size_t input_sz;
 };
 
 enum command_response_t
 {
-    COMMAND_RESPONSE_LOG                    = 1,
-    COMMAND_RESPONSE_COND_CREATE            = 2,
-    COMMAND_RESPONSE_COND_DESTROY           = 3,
-    COMMAND_RESPONSE_COND_BROADCAST         = 4,
-    COMMAND_RESPONSE_COND_BROADCAST_DATA    = 5,
-    COMMAND_RESPONSE_COND_CURRENT_VALUE     = 6,
-    COMMAND_RESPONSE_TICK_INTERVAL          = 7,
-    COMMAND_RESPONSE_OUTPUT                 = 16
+	COMMAND_RESPONSE_LOG                    = 1,
+	COMMAND_RESPONSE_COND_CREATE            = 2,
+	COMMAND_RESPONSE_COND_DESTROY           = 3,
+	COMMAND_RESPONSE_COND_BROADCAST         = 4,
+	COMMAND_RESPONSE_COND_BROADCAST_DATA    = 5,
+	COMMAND_RESPONSE_COND_CURRENT_VALUE     = 6,
+	COMMAND_RESPONSE_TICK_INTERVAL          = 7,
+	COMMAND_RESPONSE_OUTPUT                 = 16
 };
 
-void object_read_snapshot(struct object_interface* obj_int, const char** data, size_t* data_sz);
+void object_read_snapshot(struct object_interface *obj_int, const char **data, size_t *data_sz);
 
-void object_read_command(struct object_interface* obj_int, struct command* cmd);
-void object_command_log(struct object_interface* obj_int,
+void object_read_command(struct object_interface *obj_int, struct command *cmd);
+void object_command_log(struct object_interface *obj_int,
                         const char *format, va_list ap);
-void object_command_output(struct object_interface* obj_int,
+void object_command_output(struct object_interface *obj_int,
                            enum replicant_returncode status,
-                           const char* data, size_t data_sz);
+                           const char *data, size_t data_sz);
 
-void object_cond_create(struct object_interface* obj_int, const char* cond);
-void object_cond_destroy(struct object_interface* obj_int, const char* cond);
-int object_cond_broadcast(struct object_interface* obj_int, const char* cond);
-int object_cond_broadcast_data(struct object_interface* obj_int,
-                               const char* cond,
-                               const char* data, size_t data_sz);
-int object_cond_current_value(struct object_interface* obj_int,
-                              const char* cond, uint64_t* state,
-                              const char** data, size_t* data_sz);
+void object_cond_create(struct object_interface *obj_int, const char *cond);
+void object_cond_destroy(struct object_interface *obj_int, const char *cond);
+int object_cond_broadcast(struct object_interface *obj_int, const char *cond);
+int object_cond_broadcast_data(struct object_interface *obj_int,
+                               const char *cond,
+                               const char *data, size_t data_sz);
+int object_cond_current_value(struct object_interface *obj_int,
+                              const char *cond, uint64_t *state,
+                              const char **data, size_t *data_sz);
 
-void object_tick_interval(struct object_interface* obj_int,
-                          const char* func,
+void object_tick_interval(struct object_interface *obj_int,
+                          const char *func,
                           uint64_t seconds);
 
-void object_snapshot(struct object_interface* obj_int,
-                     const char* data, size_t data_sz);
+void object_snapshot(struct object_interface *obj_int,
+                     const char *data, size_t data_sz);
 
-void object_nop_response(struct object_interface* obj_int);
+void object_nop_response(struct object_interface *obj_int);
 
 #ifdef __cplusplus
 } /* extern "C" */

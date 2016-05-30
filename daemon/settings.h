@@ -41,21 +41,21 @@ BEGIN_REPLICANT_NAMESPACE
 
 class settings
 {
-    public:
-        settings();
+public:
+	settings();
 
-    public:
-        uint64_t SUSPECT_TIMEOUT;
-        uint64_t SUSPECT_STRIKES;
-        uint64_t DEFEND_TIMEOUT;
+public:
+	uint64_t SUSPECT_TIMEOUT;
+	uint64_t SUSPECT_STRIKES;
+	uint64_t DEFEND_TIMEOUT;
 };
 
 e::packer
-operator << (e::packer lhs, const settings& rhs);
+operator << (e::packer lhs, const settings &rhs);
 e::unpacker
-operator >> (e::unpacker lhs, settings& rhs);
+operator >> (e::unpacker lhs, settings &rhs);
 size_t
-pack_size(const settings& rhs);
+pack_size(const settings &rhs);
 
 END_REPLICANT_NAMESPACE
 

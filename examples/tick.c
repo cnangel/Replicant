@@ -29,42 +29,44 @@
 /* Replicant */
 #include <rsm.h>
 
-void*
-tick_create(struct rsm_context* ctx)
+void *
+tick_create(struct rsm_context *ctx)
 {
-    rsm_tick_interval(ctx, "callback", 5);
-    return (void*) -1;
+	rsm_tick_interval(ctx, "callback", 5);
+	return (void *) - 1;
 }
 
-void*
-tick_recreate(struct rsm_context* ctx,
-              const char* data, size_t data_sz)
+void *
+tick_recreate(struct rsm_context *ctx,
+              const char *data, size_t data_sz)
 {
-    return (void*) -1;
+	return (void *) - 1;
 }
 
 int
-tick_snapshot(struct rsm_context* ctx,
-              void* obj,
-              char** data, size_t* data_sz)
+tick_snapshot(struct rsm_context *ctx,
+              void *obj,
+              char **data, size_t *data_sz)
 {
-    *data = NULL;
-    *data_sz = 0;
-    return 0;
+	*data = NULL;
+	*data_sz = 0;
+	return 0;
 }
 
 void
-tick_callback(struct rsm_context* ctx,
-              void* obj,
-              const char* data, size_t data_sz)
+tick_callback(struct rsm_context *ctx,
+              void *obj,
+              const char *data, size_t data_sz)
 {
-    rsm_log(ctx, "from within the tick callback\n");
+	rsm_log(ctx, "from within the tick callback\n");
 }
 
-struct state_machine rsm = {
-    tick_create,
-    tick_recreate,
-    tick_snapshot,
-    {{"callback", tick_callback},
-     {NULL, NULL}}
+struct state_machine rsm =
+{
+	tick_create,
+	tick_recreate,
+	tick_snapshot,
+	{	{"callback", tick_callback},
+		{NULL, NULL}
+	}
 };

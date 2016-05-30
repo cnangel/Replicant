@@ -30,53 +30,42 @@
 #include "client/server_status.h"
 
 int
-replicant :: server_status(const char* host, uint16_t port, int timeout,
-                           replicant_returncode* status,
-                           char** human_readable)
+replicant :: server_status(const char *host, uint16_t port, int timeout,
+                           replicant_returncode *status,
+                           char **human_readable)
 {
-    *status = REPLICANT_INTERNAL;
-    *human_readable = NULL;
-    bootstrap bs(host, port);
-
-    if (!bs.valid())
-    {
-        *status = REPLICANT_COMM_FAILED;
-        *human_readable = strdup("invalid host/port combination");
-
-        if (!*human_readable)
-        {
-            *status = REPLICANT_SEE_ERRNO;
-        }
-
-        return -1;
-    }
-
-    configuration c;
-    e::error e;
-    *status = bs.do_it(timeout, &c, &e);
-
-    if (*status != REPLICANT_SUCCESS)
-    {
-        *human_readable = strdup(e.msg());
-
-        if (!*human_readable)
-        {
-            *status = REPLICANT_SEE_ERRNO;
-        }
-
-        return -1;
-    }
-
-    std::ostringstream ostr;
-    ostr << "cluster: " << c.cluster().get() << " version " << c.version().get() << "\n"
-         << "bootstrap: " << c.current_bootstrap().conn_str() << "\n";
-
-    *human_readable = strdup(ostr.str().c_str());
-
-    if (!*human_readable)
-    {
-        *status = REPLICANT_SEE_ERRNO;
-    }
-
-    return 0;
+	*status = REPLICANT_INTERNAL;
+	*human_readable = NULL;
+	bootstrap bs(host, port);
+	if (!bs.valid())
+	{
+		*status = REPLICANT_COMM_FAILED;
+		*human_readable = strdup("invalid host/port combination");
+		if (!*human_readable)
+		{
+			*status = REPLICANT_SEE_ERRNO;
+		}
+		return -1;
+	}
+	configuration c;
+	e::error e;
+	*status = bs.do_it(timeout, &c, &e);
+	if (*status != REPLICANT_SUCCESS)
+	{
+		*human_readable = strdup(e.msg());
+		if (!*human_readable)
+		{
+			*status = REPLICANT_SEE_ERRNO;
+		}
+		return -1;
+	}
+	std::ostringstream ostr;
+	ostr << "cluster: " << c.cluster().get() << " version " << c.version().get() << "\n"
+	     << "bootstrap: " << c.current_bootstrap().conn_str() << "\n";
+	*human_readable = strdup(ostr.str().c_str());
+	if (!*human_readable)
+	{
+		*status = REPLICANT_SEE_ERRNO;
+	}
+	return 0;
 }

@@ -39,29 +39,29 @@ BEGIN_REPLICANT_NAMESPACE
 
 class server
 {
-    public:
-        server();
-        explicit server(server_id id, const po6::net::location& bind_to);
+public:
+	server();
+	explicit server(server_id id, const po6::net::location &bind_to);
 
-    public:
-        server_id id;
-        po6::net::location bind_to;
+public:
+	server_id id;
+	po6::net::location bind_to;
 };
 
 bool
-operator < (const server& lhs, const server& rhs);
+operator < (const server &lhs, const server &rhs);
 bool
-operator == (const server& lhs, const server& rhs);
+operator == (const server &lhs, const server &rhs);
 
-std::ostream&
-operator << (std::ostream& lhs, const server& rhs);
+std::ostream &
+operator << (std::ostream &lhs, const server &rhs);
 
 e::packer
-operator << (e::packer lhs, const server& rhs);
+operator << (e::packer lhs, const server &rhs);
 e::unpacker
-operator >> (e::unpacker lhs, server& rhs);
+operator >> (e::unpacker lhs, server &rhs);
 size_t
-pack_size(const server& rhs);
+pack_size(const server &rhs);
 
 END_REPLICANT_NAMESPACE
 

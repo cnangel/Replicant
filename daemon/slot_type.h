@@ -38,28 +38,28 @@ BEGIN_REPLICANT_NAMESPACE
 
 enum slot_type
 {
-    SLOT_SERVER_BECOME_MEMBER = 1,
-    SLOT_SERVER_SET_GC_THRESH = 2,
-    SLOT_SERVER_CHANGE_ADDRESS = 10,
-    SLOT_SERVER_RECORD_STRIKE = 11,
-    SLOT_INCREMENT_COUNTER = 3,
-    SLOT_OBJECT_FAILED = 9,
-    SLOT_OBJECT_REPAIR = 8,
-    SLOT_TICK = 7,
-    SLOT_POKE = 4,
-    SLOT_CALL = 5,
-    SLOT_NOP = 0
+	SLOT_SERVER_BECOME_MEMBER = 1,
+	SLOT_SERVER_SET_GC_THRESH = 2,
+	SLOT_SERVER_CHANGE_ADDRESS = 10,
+	SLOT_SERVER_RECORD_STRIKE = 11,
+	SLOT_INCREMENT_COUNTER = 3,
+	SLOT_OBJECT_FAILED = 9,
+	SLOT_OBJECT_REPAIR = 8,
+	SLOT_TICK = 7,
+	SLOT_POKE = 4,
+	SLOT_CALL = 5,
+	SLOT_NOP = 0
 };
 
-std::ostream&
-operator << (std::ostream& lhs, slot_type rhs);
+std::ostream &
+operator << (std::ostream &lhs, slot_type rhs);
 
 e::packer
-operator << (e::packer lhs, const slot_type& rhs);
+operator << (e::packer lhs, const slot_type &rhs);
 e::unpacker
-operator >> (e::unpacker lhs, slot_type& rhs);
+operator >> (e::unpacker lhs, slot_type &rhs);
 size_t
-pack_size(const slot_type& rhs);
+pack_size(const slot_type &rhs);
 
 END_REPLICANT_NAMESPACE
 

@@ -36,22 +36,22 @@
 using replicant::pending_cond_wait;
 
 pending_cond_wait :: pending_cond_wait(int64_t id,
-                                       const char* object, const char* cond,
+                                       const char *object, const char *cond,
                                        uint64_t state,
-                                       replicant_returncode* st,
-                                       char** data, size_t* data_sz)
-    : pending(id, st)
-    , m_object(object)
-    , m_cond(cond)
-    , m_state(state)
-    , m_data(data)
-    , m_data_sz(data_sz)
+                                       replicant_returncode *st,
+                                       char **data, size_t *data_sz)
+	: pending(id, st)
+	, m_object(object)
+	, m_cond(cond)
+	, m_state(state)
+	, m_data(data)
+	, m_data_sz(data_sz)
 {
-    if (m_data)
-    {
-        *m_data = NULL;
-        *m_data_sz = 0;
-    }
+	if (m_data)
+	{
+		*m_data = NULL;
+		*m_data_sz = 0;
+	}
 }
 
 pending_cond_wait :: ~pending_cond_wait() throw ()
@@ -61,46 +61,44 @@ pending_cond_wait :: ~pending_cond_wait() throw ()
 std::auto_ptr<e::buffer>
 pending_cond_wait :: request(uint64_t nonce)
 {
-    e::slice obj(m_object);
-    e::slice cond(m_cond);
-    const size_t sz = BUSYBEE_HEADER_SIZE
-                    + pack_size(REPLNET_COND_WAIT)
-                    + 2 * sizeof(uint64_t)
-                    + pack_size(obj)
-                    + pack_size(cond);
-    std::auto_ptr<e::buffer> msg(e::buffer::create(sz));
-    msg->pack_at(BUSYBEE_HEADER_SIZE)
-        << REPLNET_COND_WAIT << nonce << obj << cond << m_state;
-    return msg;
+	e::slice obj(m_object);
+	e::slice cond(m_cond);
+	const size_t sz = BUSYBEE_HEADER_SIZE
+	                  + pack_size(REPLNET_COND_WAIT)
+	                  + 2 * sizeof(uint64_t)
+	                  + pack_size(obj)
+	                  + pack_size(cond);
+	std::auto_ptr<e::buffer> msg(e::buffer::create(sz));
+	msg->pack_at(BUSYBEE_HEADER_SIZE)
+	        << REPLNET_COND_WAIT << nonce << obj << cond << m_state;
+	return msg;
 }
 
 bool
 pending_cond_wait :: resend_on_failure()
 {
-    return true;
+	return true;
 }
 
 void
-pending_cond_wait :: handle_response(client*, std::auto_ptr<e::buffer>, e::unpacker up)
+pending_cond_wait :: handle_response(client *, std::auto_ptr<e::buffer>, e::unpacker up)
 {
-    uint64_t state;
-    e::slice data;
-    replicant_returncode st;
-    up = up >> st >> state >> data;
-
-    if (up.error())
-    {
-        PENDING_ERROR(SERVER_ERROR) << "received bad cond_wait response";
-    }
-    else
-    {
-        this->set_status(st);
-
-        if (m_data)
-        {
-            *m_data = static_cast<char*>(malloc(data.size()));
-            *m_data_sz = data.size();
-            memmove(*m_data, data.data(), data.size());
-        }
-    }
+	uint64_t state;
+	e::slice data;
+	replicant_returncode st;
+	up = up >> st >> state >> data;
+	if (up.error())
+	{
+		PENDING_ERROR(SERVER_ERROR) << "received bad cond_wait response";
+	}
+	else
+	{
+		this->set_status(st);
+		if (m_data)
+		{
+			*m_data = static_cast<char *>(malloc(data.size()));
+			*m_data_sz = data.size();
+			memmove(*m_data, data.data(), data.size());
+		}
+	}
 }

@@ -39,7 +39,7 @@ BEGIN_REPLICANT_NAMESPACE
 inline unsigned
 quorum_calc(unsigned size)
 {
-    return size / 2 + 1;
+	return size / 2 + 1;
 }
 
 END_REPLICANT_NAMESPACE

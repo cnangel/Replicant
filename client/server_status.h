@@ -38,9 +38,9 @@
 BEGIN_REPLICANT_NAMESPACE
 
 int
-server_status(const char* host, uint16_t port, int timeout,
-              replicant_returncode* status,
-              char** human_readable);
+server_status(const char *host, uint16_t port, int timeout,
+              replicant_returncode *status,
+              char **human_readable);
 
 END_REPLICANT_NAMESPACE
 

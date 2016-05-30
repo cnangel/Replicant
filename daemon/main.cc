@@ -50,200 +50,180 @@
 extern bool s_debug_mode;
 
 int
-main(int argc, const char* argv[])
+main(int argc, const char *argv[])
 {
-    const char* wrap_name = getenv("REPLICANT_WRAP");
-
-    if (wrap_name)
-    {
-        argv[0] = wrap_name;
-    }
-
-    bool daemonize = true;
-    const char* data = ".";
-    const char* log = NULL;
-    bool listen = false;
-    const char* listen_host = "auto";
-    long listen_port = 1982;
-    bool connect1 = false;
-    const char* connect_host = "127.0.0.1";
-    long connect_port = 1982;
-    bool connect2 = false;
-    const char* connect_string = NULL;
-    const char* pidfile = "";
-    bool has_pidfile = false;
-    bool init = false;
-    const char* init_obj = NULL;
-    const char* init_lib = NULL;
-    const char* init_str = NULL;
-    const char* init_rst = NULL;
-    bool log_immediate = false;
-    sigset_t ss;
-
-    if (sigfillset(&ss) < 0 ||
-        sigprocmask(SIG_BLOCK, &ss, NULL) < 0)
-    {
-        std::cerr << "could not block signals";
-        return EXIT_FAILURE;
-    }
-
-    e::argparser ap;
-    ap.autohelp();
-    ap.arg().name('d', "daemon")
-            .description("run in the background")
-            .set_true(&daemonize);
-    ap.arg().name('f', "foreground")
-            .description("run in the foreground")
-            .set_false(&daemonize);
-    ap.arg().name('D', "data")
-            .description("store persistent state in this directory (default: .)")
-            .metavar("dir").as_string(&data);
-    ap.arg().name('L', "log")
-            .description("store logs in this directory (default: --data)")
-            .metavar("dir").as_string(&log);
-    ap.arg().name('l', "listen")
-            .description("listen on a specific IP address (default: auto)")
-            .metavar("IP").as_string(&listen_host).set_true(&listen);
-    ap.arg().name('p', "listen-port")
-            .description("listen on an alternative port (default: 1982)")
-            .metavar("port").as_long(&listen_port).set_true(&listen);
-    ap.arg().name('c', "connect")
-            .description("join an existing cluster through IP address or hostname")
-            .metavar("addr").as_string(&connect_host).set_true(&connect1);
-    ap.arg().name('P', "connect-port")
-            .description("connect to an alternative port (default: 1982)")
-            .metavar("port").as_long(&connect_port).set_true(&connect1);
-    ap.arg().name('C', "connect-string")
-            .description("connect to a list of hosts (default: none)")
-            .metavar("hosts").as_string(&connect_string).set_true(&connect2);
-    ap.arg().long_name("pidfile")
-            .description("write the PID to a file (default: don't)")
-            .metavar("file").as_string(&pidfile).set_true(&has_pidfile);
-    ap.arg().long_name("object")
-            .description("initialize a new cluster with this object")
-            .metavar("object").as_string(&init_obj).set_true(&init).hidden();
-    ap.arg().long_name("library")
-            .description("initialize a new cluster with this library for the object")
-            .metavar("library").as_string(&init_lib).set_true(&init).hidden();
-    ap.arg().long_name("init-string")
-            .description("initialize a new cluster by calling \"init\" on the object")
-            .metavar("library").as_string(&init_str).hidden();
-    ap.arg().long_name("restore")
-            .description("initialize a new cluster by restoring object/library with this backup")
-            .metavar("restore").as_string(&init_rst).hidden();
-    ap.arg().long_name("log-immediate")
-            .description("immediately flush all log output")
-            .set_true(&log_immediate).hidden();
-    ap.arg().long_name("debug")
-            .description("start in debug mode")
-            .set_true(&s_debug_mode).hidden();
-
-    if (!ap.parse(argc, argv))
-    {
-        return EXIT_FAILURE;
-    }
-
-    if (ap.args_sz() != 0)
-    {
-        std::cerr << "command takes no positional arguments\n" << std::endl;
-        ap.usage();
-        return EXIT_FAILURE;
-    }
-
-    if (listen_port >= (1 << 16))
-    {
-        std::cerr << "listen-port is out of range" << std::endl;
-        return EXIT_FAILURE;
-    }
-
-    if (connect_port >= (1 << 16))
-    {
-        std::cerr << "connect-port is out of range" << std::endl;
-        return EXIT_FAILURE;
-    }
-
-    po6::net::ipaddr listen_ip;
-    po6::net::location bind_to;
-
-    if (strcmp(listen_host, "auto") == 0)
-    {
-        if (!busybee_discover(&listen_ip))
-        {
-            std::cerr << "cannot automatically discover local address; specify one manually" << std::endl;
-            return EXIT_FAILURE;
-        }
-
-        bind_to = po6::net::location(listen_ip, listen_port);
-    }
-    else
-    {
-        if (listen_ip.set(listen_host))
-        {
-            bind_to = po6::net::location(listen_ip, listen_port);
-        }
-
-        if (bind_to == po6::net::location())
-        {
-            bind_to = po6::net::hostname(listen_host, 0).lookup(AF_UNSPEC, IPPROTO_TCP);
-            bind_to.port = listen_port;
-        }
-    }
-
-    if (bind_to == po6::net::location())
-    {
-        std::cerr << "cannot interpret listen address as hostname or IP address" << std::endl;
-        return EXIT_FAILURE;
-    }
-
-    if (bind_to.address == po6::net::ipaddr::ANY())
-    {
-        std::cerr << "cannot bind to " << bind_to << " because it is not routable" << std::endl;
-        return EXIT_FAILURE;
-    }
-
-    if (init && (init_obj == NULL || init_lib == NULL))
-    {
-        std::cerr << "object and library must be either omitted or presented as a pair" << std::endl;
-        return EXIT_FAILURE;
-    }
-
-    replicant::bootstrap bs;
-
-    if (connect1 && connect2)
-    {
-        bs = replicant::bootstrap(connect_host, connect_port, connect_string);
-    }
-    else if (connect1)
-    {
-        bs = replicant::bootstrap(connect_host, connect_port);
-    }
-    else if (connect2)
-    {
-        bs = replicant::bootstrap(connect_string);
-    }
-
-    google::InitGoogleLogging(argv[0]);
-    google::InstallFailureSignalHandler();
-
-    if (log_immediate)
-    {
-        FLAGS_logbufsecs = 0;
-    }
-
-    try
-    {
-        replicant::daemon d;
-        return d.run(daemonize,
-                     std::string(data),
-                     std::string(log ? log : data),
-                     std::string(pidfile), has_pidfile,
-                     listen, bind_to,
-                     connect1 || connect2, bs,
-                     init_obj, init_lib, init_str, init_rst);
-    }
-    catch (std::exception& e)
-    {
-        std::cerr << "error:  " << e.what() << std::endl;
-        return EXIT_FAILURE;
-    }
+	const char *wrap_name = getenv("REPLICANT_WRAP");
+	if (wrap_name)
+	{
+		argv[0] = wrap_name;
+	}
+	bool daemonize = true;
+	const char *data = ".";
+	const char *log = NULL;
+	bool listen = false;
+	const char *listen_host = "auto";
+	long listen_port = 1982;
+	bool connect1 = false;
+	const char *connect_host = "127.0.0.1";
+	long connect_port = 1982;
+	bool connect2 = false;
+	const char *connect_string = NULL;
+	const char *pidfile = "";
+	bool has_pidfile = false;
+	bool init = false;
+	const char *init_obj = NULL;
+	const char *init_lib = NULL;
+	const char *init_str = NULL;
+	const char *init_rst = NULL;
+	bool log_immediate = false;
+	sigset_t ss;
+	if (sigfillset(&ss) < 0 ||
+	    sigprocmask(SIG_BLOCK, &ss, NULL) < 0)
+	{
+		std::cerr << "could not block signals";
+		return EXIT_FAILURE;
+	}
+	e::argparser ap;
+	ap.autohelp();
+	ap.arg().name('d', "daemon")
+	.description("run in the background")
+	.set_true(&daemonize);
+	ap.arg().name('f', "foreground")
+	.description("run in the foreground")
+	.set_false(&daemonize);
+	ap.arg().name('D', "data")
+	.description("store persistent state in this directory (default: .)")
+	.metavar("dir").as_string(&data);
+	ap.arg().name('L', "log")
+	.description("store logs in this directory (default: --data)")
+	.metavar("dir").as_string(&log);
+	ap.arg().name('l', "listen")
+	.description("listen on a specific IP address (default: auto)")
+	.metavar("IP").as_string(&listen_host).set_true(&listen);
+	ap.arg().name('p', "listen-port")
+	.description("listen on an alternative port (default: 1982)")
+	.metavar("port").as_long(&listen_port).set_true(&listen);
+	ap.arg().name('c', "connect")
+	.description("join an existing cluster through IP address or hostname")
+	.metavar("addr").as_string(&connect_host).set_true(&connect1);
+	ap.arg().name('P', "connect-port")
+	.description("connect to an alternative port (default: 1982)")
+	.metavar("port").as_long(&connect_port).set_true(&connect1);
+	ap.arg().name('C', "connect-string")
+	.description("connect to a list of hosts (default: none)")
+	.metavar("hosts").as_string(&connect_string).set_true(&connect2);
+	ap.arg().long_name("pidfile")
+	.description("write the PID to a file (default: don't)")
+	.metavar("file").as_string(&pidfile).set_true(&has_pidfile);
+	ap.arg().long_name("object")
+	.description("initialize a new cluster with this object")
+	.metavar("object").as_string(&init_obj).set_true(&init).hidden();
+	ap.arg().long_name("library")
+	.description("initialize a new cluster with this library for the object")
+	.metavar("library").as_string(&init_lib).set_true(&init).hidden();
+	ap.arg().long_name("init-string")
+	.description("initialize a new cluster by calling \"init\" on the object")
+	.metavar("library").as_string(&init_str).hidden();
+	ap.arg().long_name("restore")
+	.description("initialize a new cluster by restoring object/library with this backup")
+	.metavar("restore").as_string(&init_rst).hidden();
+	ap.arg().long_name("log-immediate")
+	.description("immediately flush all log output")
+	.set_true(&log_immediate).hidden();
+	ap.arg().long_name("debug")
+	.description("start in debug mode")
+	.set_true(&s_debug_mode).hidden();
+	if (!ap.parse(argc, argv))
+	{
+		return EXIT_FAILURE;
+	}
+	if (ap.args_sz() != 0)
+	{
+		std::cerr << "command takes no positional arguments\n" << std::endl;
+		ap.usage();
+		return EXIT_FAILURE;
+	}
+	if (listen_port >= (1 << 16))
+	{
+		std::cerr << "listen-port is out of range" << std::endl;
+		return EXIT_FAILURE;
+	}
+	if (connect_port >= (1 << 16))
+	{
+		std::cerr << "connect-port is out of range" << std::endl;
+		return EXIT_FAILURE;
+	}
+	po6::net::ipaddr listen_ip;
+	po6::net::location bind_to;
+	if (strcmp(listen_host, "auto") == 0)
+	{
+		if (!busybee_discover(&listen_ip))
+		{
+			std::cerr << "cannot automatically discover local address; specify one manually" << std::endl;
+			return EXIT_FAILURE;
+		}
+		bind_to = po6::net::location(listen_ip, listen_port);
+	}
+	else
+	{
+		if (listen_ip.set(listen_host))
+		{
+			bind_to = po6::net::location(listen_ip, listen_port);
+		}
+		if (bind_to == po6::net::location())
+		{
+			bind_to = po6::net::hostname(listen_host, 0).lookup(AF_UNSPEC, IPPROTO_TCP);
+			bind_to.port = listen_port;
+		}
+	}
+	if (bind_to == po6::net::location())
+	{
+		std::cerr << "cannot interpret listen address as hostname or IP address" << std::endl;
+		return EXIT_FAILURE;
+	}
+	if (bind_to.address == po6::net::ipaddr::ANY())
+	{
+		std::cerr << "cannot bind to " << bind_to << " because it is not routable" << std::endl;
+		return EXIT_FAILURE;
+	}
+	if (init && (init_obj == NULL || init_lib == NULL))
+	{
+		std::cerr << "object and library must be either omitted or presented as a pair" << std::endl;
+		return EXIT_FAILURE;
+	}
+	replicant::bootstrap bs;
+	if (connect1 && connect2)
+	{
+		bs = replicant::bootstrap(connect_host, connect_port, connect_string);
+	}
+	else if (connect1)
+	{
+		bs = replicant::bootstrap(connect_host, connect_port);
+	}
+	else if (connect2)
+	{
+		bs = replicant::bootstrap(connect_string);
+	}
+	google::InitGoogleLogging(argv[0]);
+	google::InstallFailureSignalHandler();
+	if (log_immediate)
+	{
+		FLAGS_logbufsecs = 0;
+	}
+	try
+	{
+		replicant::daemon d;
+		return d.run(daemonize,
+		             std::string(data),
+		             std::string(log ? log : data),
+		             std::string(pidfile), has_pidfile,
+		             listen, bind_to,
+		             connect1 || connect2, bs,
+		             init_obj, init_lib, init_str, init_rst);
+	}
+	catch (std::exception &e)
+	{
+		std::cerr << "error:  " << e.what() << std::endl;
+		return EXIT_FAILURE;
+	}
 }

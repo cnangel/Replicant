@@ -41,62 +41,53 @@
 #include "tools/common.h"
 
 int
-main(int argc, const char* argv[])
+main(int argc, const char *argv[])
 {
-    long timeout = 10;
-    connect_opts conn;
-    e::argparser ap;
-    ap.autohelp();
-    ap.arg().name('t', "timeout")
-            .description("number of seconds to retry before failing (default: 10)")
-            .metavar("S").as_long(&timeout);
-    ap.option_string("[OPTIONS]");
-    ap.add("Server to kill:", conn.parser());
-
-    if (!ap.parse(argc, argv))
-    {
-        return EXIT_FAILURE;
-    }
-
-    if (ap.args_sz() != 0)
-    {
-        std::cerr << "command takes no positional arguments\n" << std::endl;
-        ap.usage();
-        return EXIT_FAILURE;
-    }
-
-    if (!conn.validate())
-    {
-        std::cerr << "invalid host:port specification\n" << std::endl;
-        ap.usage();
-        return EXIT_FAILURE;
-    }
-
-    int64_t to = timeout;
-
-    if (!e::safe_mul(to, 1000, &to) || to > INT_MAX)
-    {
-        std::cerr << "timeout too large\n" << std::endl;
-        ap.usage();
-        return EXIT_FAILURE;
-    }
-
-    replicant_returncode status;
-    char* desc = NULL;
-
-    if (replicant_server_status(conn.host(), conn.port(), to, &status, &desc) < 0)
-    {
-        if (desc)
-        {
-            std::cerr << "error: " << desc << std::endl;
-            free(desc);
-        }
-
-        return EXIT_FAILURE;
-    }
-
-    assert(desc);
-    std::cerr << desc << std::flush;
-    free(desc);
-    return EXIT_SUCCESS;
+	long timeout = 10;
+	connect_opts conn;
+	e::argparser ap;
+	ap.autohelp();
+	ap.arg().name('t', "timeout")
+	.description("number of seconds to retry before failing (default: 10)")
+	.metavar("S").as_long(&timeout);
+	ap.option_string("[OPTIONS]");
+	ap.add("Server to kill:", conn.parser());
+	if (!ap.parse(argc, argv))
+	{
+		return EXIT_FAILURE;
+	}
+	if (ap.args_sz() != 0)
+	{
+		std::cerr << "command takes no positional arguments\n" << std::endl;
+		ap.usage();
+		return EXIT_FAILURE;
+	}
+	if (!conn.validate())
+	{
+		std::cerr << "invalid host:port specification\n" << std::endl;
+		ap.usage();
+		return EXIT_FAILURE;
+	}
+	int64_t to = timeout;
+	if (!e::safe_mul(to, 1000, &to) || to > INT_MAX)
+	{
+		std::cerr << "timeout too large\n" << std::endl;
+		ap.usage();
+		return EXIT_FAILURE;
+	}
+	replicant_returncode status;
+	char *desc = NULL;
+	if (replicant_server_status(conn.host(), conn.port(), to, &status, &desc) < 0)
+	{
+		if (desc)
+		{
+			std::cerr << "error: " << desc << std::endl;
+			free(desc);
+		}
+		return EXIT_FAILURE;
+	}
+	assert(desc);
+	std::cerr << desc << std::flush;
+	free(desc);
+	return EXIT_SUCCESS;
 }

@@ -46,36 +46,36 @@ class configuration;
 
 class bootstrap
 {
-    public:
-        static bool parse_hosts(const char* conn_str,
-                                std::vector<po6::net::hostname>* hosts);
-        static std::string conn_str(const po6::net::hostname* hns, size_t hns_sz);
+public:
+	static bool parse_hosts(const char *conn_str,
+	                        std::vector<po6::net::hostname> *hosts);
+	static std::string conn_str(const po6::net::hostname *hns, size_t hns_sz);
 
-    public:
-        bootstrap();
-        bootstrap(const char* host, uint16_t port);
-        bootstrap(const char* conn_str);
-        bootstrap(const char* host, uint16_t port, const char* conn_str);
-        bootstrap(const std::vector<po6::net::hostname>& hosts);
-        bootstrap(const bootstrap& other);
-        ~bootstrap() throw ();
+public:
+	bootstrap();
+	bootstrap(const char *host, uint16_t port);
+	bootstrap(const char *conn_str);
+	bootstrap(const char *host, uint16_t port, const char *conn_str);
+	bootstrap(const std::vector<po6::net::hostname> &hosts);
+	bootstrap(const bootstrap &other);
+	~bootstrap() throw ();
 
-    public:
-        bool valid() const;
-        replicant_returncode do_it(int timeout, configuration* config, e::error* err) const;
-        std::string conn_str() const;
-        const std::vector<po6::net::hostname>& hosts() const { return m_hosts; }
+public:
+	bool valid() const;
+	replicant_returncode do_it(int timeout, configuration *config, e::error *err) const;
+	std::string conn_str() const;
+	const std::vector<po6::net::hostname> &hosts() const { return m_hosts; }
 
-    public:
-        bootstrap& operator = (const bootstrap& rhs);
+public:
+	bootstrap &operator = (const bootstrap &rhs);
 
-    private:
-        std::vector<po6::net::hostname> m_hosts;
-        bool m_valid;
+private:
+	std::vector<po6::net::hostname> m_hosts;
+	bool m_valid;
 };
 
-std::ostream&
-operator << (std::ostream& lhs, const bootstrap& rhs);
+std::ostream &
+operator << (std::ostream &lhs, const bootstrap &rhs);
 
 END_REPLICANT_NAMESPACE
 

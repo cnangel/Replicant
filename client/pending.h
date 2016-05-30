@@ -45,52 +45,52 @@ class client;
 
 class pending
 {
-    public:
-        pending(int64_t client_visible_id,
-                replicant_returncode* status);
-        virtual ~pending() throw ();
+public:
+	pending(int64_t client_visible_id,
+	        replicant_returncode *status);
+	virtual ~pending() throw ();
 
-    public:
-        int64_t client_visible_id() const { return m_client_visible_id; }
-        void set_status(replicant_returncode st) { *m_status = st; }
-        replicant_returncode status() const { return *m_status; }
-        replicant_returncode* status_ptr() const { return m_status; }
-        e::error error() const { return m_error; }
+public:
+	int64_t client_visible_id() const { return m_client_visible_id; }
+	void set_status(replicant_returncode st) { *m_status = st; }
+	replicant_returncode status() const { return *m_status; }
+	replicant_returncode *status_ptr() const { return m_status; }
+	e::error error() const { return m_error; }
 
-    public:
-        virtual std::auto_ptr<e::buffer> request(uint64_t nonce) = 0;
-        virtual bool resend_on_failure() = 0;
-        virtual void handle_response(client* cl,
-                                     std::auto_ptr<e::buffer> msg,
-                                     e::unpacker up) = 0;
+public:
+	virtual std::auto_ptr<e::buffer> request(uint64_t nonce) = 0;
+	virtual bool resend_on_failure() = 0;
+	virtual void handle_response(client *cl,
+	                             std::auto_ptr<e::buffer> msg,
+	                             e::unpacker up) = 0;
 
-    public:
-        std::ostream& error(const char* file, size_t line);
-        void set_error(const e::error& err);
-        void success();
+public:
+	std::ostream &error(const char *file, size_t line);
+	void set_error(const e::error &err);
+	void success();
 
-    // refcount
-    protected:
-        friend class e::intrusive_ptr<pending>;
-        void inc() { ++m_ref; }
-        void dec() { if (--m_ref == 0) delete this; }
-        size_t m_ref;
+	// refcount
+protected:
+	friend class e::intrusive_ptr<pending>;
+	void inc() { ++m_ref; }
+	void dec() { if (--m_ref == 0) delete this; }
+	size_t m_ref;
 
-    // operation state
-    private:
-        int64_t m_client_visible_id;
-        replicant_returncode* m_status;
-        e::error m_error;
+	// operation state
+private:
+	int64_t m_client_visible_id;
+	replicant_returncode *m_status;
+	e::error m_error;
 
-    // noncopyable
-    private:
-        pending(const pending&);
-        pending& operator = (const pending&);
+	// noncopyable
+private:
+	pending(const pending &);
+	pending &operator = (const pending &);
 };
 
 #define PENDING_ERROR(CODE) \
-    this->set_status(REPLICANT_ ## CODE); \
-    this->error(__FILE__, __LINE__)
+	this->set_status(REPLICANT_ ## CODE); \
+	this->error(__FILE__, __LINE__)
 
 END_REPLICANT_NAMESPACE
 

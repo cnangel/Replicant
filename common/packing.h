@@ -40,11 +40,11 @@ using ::pack_size;
 using e::pack_size;
 
 size_t
-pack_size(const replicant_returncode& rhs);
+pack_size(const replicant_returncode &rhs);
 e::packer
-operator << (e::packer lhs, const replicant_returncode& rhs);
+operator << (e::packer lhs, const replicant_returncode &rhs);
 e::unpacker
-operator >> (e::unpacker lhs, replicant_returncode& rhs);
+operator >> (e::unpacker lhs, replicant_returncode &rhs);
 
 END_REPLICANT_NAMESPACE
 

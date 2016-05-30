@@ -38,24 +38,24 @@ BEGIN_REPLICANT_NAMESPACE
 
 class failure_tracker
 {
-    public:
-        failure_tracker(configuration* config);
-        ~failure_tracker() throw ();
+public:
+	failure_tracker(configuration *config);
+	~failure_tracker() throw ();
 
-    public:
-        void set_server_id(server_id us);
-        void assume_all_alive();
-        void proof_of_life(server_id si);
-        bool suspect_failed(server_id si, uint64_t timeout);
+public:
+	void set_server_id(server_id us);
+	void assume_all_alive();
+	void proof_of_life(server_id si);
+	bool suspect_failed(server_id si, uint64_t timeout);
 
-    private:
-        failure_tracker(const failure_tracker&);
-        failure_tracker& operator = (const failure_tracker&);
+private:
+	failure_tracker(const failure_tracker &);
+	failure_tracker &operator = (const failure_tracker &);
 
-    private:
-        configuration* m_config;
-        server_id m_us;
-        uint64_t m_last_seen[REPLICANT_MAX_REPLICAS];
+private:
+	configuration *m_config;
+	server_id m_us;
+	uint64_t m_last_seen[REPLICANT_MAX_REPLICAS];
 };
 
 END_REPLICANT_NAMESPACE

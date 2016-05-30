@@ -39,16 +39,16 @@ BEGIN_REPLICANT_NAMESPACE
 
 class server_selector
 {
-    public:
-        server_selector(const std::vector<server_id>& servers, uint64_t rand);
-        ~server_selector() throw ();
+public:
+	server_selector(const std::vector<server_id> &servers, uint64_t rand);
+	~server_selector() throw ();
 
-    public:
-        server_id next();
+public:
+	server_id next();
 
-    private:
-        std::vector<server_id> m_servers;
-        size_t m_consumed_idx;
+private:
+	std::vector<server_id> m_servers;
+	size_t m_consumed_idx;
 };
 
 END_REPLICANT_NAMESPACE

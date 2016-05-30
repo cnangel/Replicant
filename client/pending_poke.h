@@ -35,21 +35,21 @@ BEGIN_REPLICANT_NAMESPACE
 
 class pending_poke : public pending
 {
-    public:
-        pending_poke(int64_t client_visible_id,
-                     replicant_returncode* status);
-        virtual ~pending_poke() throw ();
+public:
+	pending_poke(int64_t client_visible_id,
+	             replicant_returncode *status);
+	virtual ~pending_poke() throw ();
 
-    public:
-        virtual std::auto_ptr<e::buffer> request(uint64_t nonce);
-        virtual bool resend_on_failure();
-        virtual void handle_response(client* cl,
-                                     std::auto_ptr<e::buffer> msg,
-                                     e::unpacker up);
+public:
+	virtual std::auto_ptr<e::buffer> request(uint64_t nonce);
+	virtual bool resend_on_failure();
+	virtual void handle_response(client *cl,
+	                             std::auto_ptr<e::buffer> msg,
+	                             e::unpacker up);
 
-    private:
-        pending_poke(const pending_poke&);
-        pending_poke& operator = (const pending_poke&);
+private:
+	pending_poke(const pending_poke &);
+	pending_poke &operator = (const pending_poke &);
 };
 
 END_REPLICANT_NAMESPACE

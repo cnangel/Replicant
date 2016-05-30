@@ -37,40 +37,40 @@ BEGIN_REPLICANT_NAMESPACE
 
 class pvalue
 {
-    public:
-        pvalue();
-        pvalue(const ballot& b, uint64_t s, const std::string& c);
-        pvalue(const pvalue& other);
-        ~pvalue() throw ();
+public:
+	pvalue();
+	pvalue(const ballot &b, uint64_t s, const std::string &c);
+	pvalue(const pvalue &other);
+	~pvalue() throw ();
 
-    public:
-        pvalue& operator = (const pvalue& rhs);
+public:
+	pvalue &operator = (const pvalue &rhs);
 
-    public:
-        ballot b;
-        uint64_t s;
-        std::string c;
+public:
+	ballot b;
+	uint64_t s;
+	std::string c;
 };
 
 int
-compare(const pvalue& lhs, const pvalue& rhs);
+compare(const pvalue &lhs, const pvalue &rhs);
 
-bool operator < (const pvalue& lhs, const pvalue& rhs);
-bool operator <= (const pvalue& lhs, const pvalue& rhs);
-bool operator == (const pvalue& lhs, const pvalue& rhs);
-bool operator != (const pvalue& lhs, const pvalue& rhs);
-bool operator >= (const pvalue& lhs, const pvalue& rhs);
-bool operator > (const pvalue& lhs, const pvalue& rhs);
+bool operator < (const pvalue &lhs, const pvalue &rhs);
+bool operator <= (const pvalue &lhs, const pvalue &rhs);
+bool operator == (const pvalue &lhs, const pvalue &rhs);
+bool operator != (const pvalue &lhs, const pvalue &rhs);
+bool operator >= (const pvalue &lhs, const pvalue &rhs);
+bool operator > (const pvalue &lhs, const pvalue &rhs);
 
-std::ostream&
-operator << (std::ostream& lhs, const pvalue& rhs);
+std::ostream &
+operator << (std::ostream &lhs, const pvalue &rhs);
 
 size_t
-pack_size(const pvalue& p);
+pack_size(const pvalue &p);
 e::packer
-operator << (e::packer lhs, const pvalue& rhs);
+operator << (e::packer lhs, const pvalue &rhs);
 e::unpacker
-operator >> (e::unpacker lhs, pvalue& rhs);
+operator >> (e::unpacker lhs, pvalue &rhs);
 
 END_REPLICANT_NAMESPACE
 

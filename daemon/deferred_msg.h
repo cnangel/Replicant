@@ -37,15 +37,15 @@ BEGIN_REPLICANT_NAMESPACE
 
 struct deferred_msg
 {
-    deferred_msg(uint64_t w, server_id t, e::buffer* m) : when(w), si(t), msg(m) {}
-    deferred_msg(const deferred_msg& other) : when(other.when), si(other.si), msg(other.msg) {}
-    ~deferred_msg() throw () {}
+	deferred_msg(uint64_t w, server_id t, e::buffer *m) : when(w), si(t), msg(m) {}
+	deferred_msg(const deferred_msg &other) : when(other.when), si(other.si), msg(other.msg) {}
+	~deferred_msg() throw () {}
 
-    deferred_msg& operator = (const deferred_msg&);
+	deferred_msg &operator = (const deferred_msg &);
 
-    uint64_t when;
-    server_id si;
-    e::buffer* msg;
+	uint64_t when;
+	server_id si;
+	e::buffer *msg;
 };
 
 END_REPLICANT_NAMESPACE

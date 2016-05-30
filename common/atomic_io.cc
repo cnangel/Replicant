@@ -37,40 +37,35 @@
 #include "common/atomic_io.h"
 
 bool
-replicant :: atomic_read(int dir, const char* path, std::string* contents)
+replicant :: atomic_read(int dir, const char *path, std::string *contents)
 {
-    contents->clear();
-    po6::io::fd fd(openat(dir, path, O_RDONLY));
-
-    if (fd.get() < 0)
-    {
-        return false;
-    }
-
-    char buf[512];
-    ssize_t amt;
-
-    while ((amt = fd.xread(buf, 512)) > 0)
-    {
-        contents->append(buf, amt);
-    }
-
-    if (amt < 0)
-    {
-        return false;
-    }
-
-    return true;
+	contents->clear();
+	po6::io::fd fd(openat(dir, path, O_RDONLY));
+	if (fd.get() < 0)
+	{
+		return false;
+	}
+	char buf[512];
+	ssize_t amt;
+	while ((amt = fd.xread(buf, 512)) > 0)
+	{
+		contents->append(buf, amt);
+	}
+	if (amt < 0)
+	{
+		return false;
+	}
+	return true;
 }
 
 bool
-replicant :: atomic_write(int dir, const char* path, const std::string& contents)
+replicant :: atomic_write(int dir, const char *path, const std::string &contents)
 {
-    po6::io::fd fd(openat(dir, ".atomic.tmp", O_WRONLY|O_CREAT|O_TRUNC, S_IRUSR|S_IWUSR));
-    return fd.get() >= 0 &&
-           fd.xwrite(contents.data(), contents.size()) == ssize_t(contents.size()) &&
-           fsync(fd.get()) >= 0 &&
-           (dir == AT_FDCWD || fsync(dir) >= 0) &&
-           renameat(dir, ".atomic.tmp", dir, path) >= 0 &&
-           (dir == AT_FDCWD || fsync(dir) >= 0);
+	po6::io::fd fd(openat(dir, ".atomic.tmp", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR));
+	return fd.get() >= 0 &&
+	       fd.xwrite(contents.data(), contents.size()) == ssize_t(contents.size()) &&
+	       fsync(fd.get()) >= 0 &&
+	       (dir == AT_FDCWD || fsync(dir) >= 0) &&
+	       renameat(dir, ".atomic.tmp", dir, path) >= 0 &&
+	       (dir == AT_FDCWD || fsync(dir) >= 0);
 }

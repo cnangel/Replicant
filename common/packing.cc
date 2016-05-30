@@ -29,22 +29,22 @@
 #include "common/packing.h"
 
 size_t
-replicant ::pack_size(const replicant_returncode&)
+replicant ::pack_size(const replicant_returncode &)
 {
-    return e::pack_size(uint16_t());
+	return e::pack_size(uint16_t());
 }
 
 e::packer
-replicant ::operator << (e::packer lhs, const replicant_returncode& rhs)
+replicant ::operator << (e::packer lhs, const replicant_returncode &rhs)
 {
-    return lhs << static_cast<uint16_t>(rhs);
+	return lhs << static_cast<uint16_t>(rhs);
 }
 
 e::unpacker
-replicant ::operator >> (e::unpacker lhs, replicant_returncode& rhs)
+replicant ::operator >> (e::unpacker lhs, replicant_returncode &rhs)
 {
-    uint16_t x;
-    lhs = lhs >> x;
-    rhs = static_cast<replicant_returncode>(x);
-    return lhs;
+	uint16_t x;
+	lhs = lhs >> x;
+	rhs = static_cast<replicant_returncode>(x);
+	return lhs;
 }

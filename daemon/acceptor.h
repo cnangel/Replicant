@@ -45,60 +45,60 @@ BEGIN_REPLICANT_NAMESPACE
 
 class acceptor
 {
-    public:
-        acceptor();
-        ~acceptor() throw ();
+public:
+	acceptor();
+	~acceptor() throw ();
 
-    public:
-        // This *will* change the current directory to dir.
-        bool open(const std::string& dir,
-                  bool* saved, server* saved_us,
-                  bootstrap* saved_bootstrap);
-        bool save(server saved_us,
-                  const bootstrap& saved_bootstrap);
+public:
+	// This *will* change the current directory to dir.
+	bool open(const std::string &dir,
+	          bool *saved, server *saved_us,
+	          bootstrap *saved_bootstrap);
+	bool save(server saved_us,
+	          const bootstrap &saved_bootstrap);
 
-    public:
-        const ballot& current_ballot() { return m_ballot; }
-        const std::vector<pvalue>& pvals();
-        uint64_t lowest_acceptable_slot() const { return m_lowest_acceptable_slot; }
-        bool failed() const { return m_permafail; }
-        uint64_t write_cut() const { return m_opcount; }
+public:
+	const ballot &current_ballot() { return m_ballot; }
+	const std::vector<pvalue> &pvals();
+	uint64_t lowest_acceptable_slot() const { return m_lowest_acceptable_slot; }
+	bool failed() const { return m_permafail; }
+	uint64_t write_cut() const { return m_opcount; }
 
-    public:
-        void adopt(const ballot& b);
-        void accept(const pvalue& pval);
-        void garbage_collect(uint64_t below);
-        uint64_t sync_cut();
-        bool record_snapshot(uint64_t slot, const e::slice& snapshot);
-        bool load_latest_snapshot(e::slice* snapshot,
-                                  std::auto_ptr<e::buffer>* snapshot_backing);
+public:
+	void adopt(const ballot &b);
+	void accept(const pvalue &pval);
+	void garbage_collect(uint64_t below);
+	uint64_t sync_cut();
+	bool record_snapshot(uint64_t slot, const e::slice &snapshot);
+	bool load_latest_snapshot(e::slice *snapshot,
+	                          std::auto_ptr<e::buffer> *snapshot_backing);
 
-    private:
-        struct log_segment;
-        class garbage_collector;
-        void compact_pvals(std::vector<pvalue>* pvals);
-        bool atomic_read(const char* path, std::string* contents);
-        bool atomic_write(const char* path, const std::string& contents);
-        bool parse_identity(const std::string& ident,
-                            server* saved_us, bootstrap* saved_bootstrap);
-        log_segment* get_writable_log();
-        static bool replay_log(int dir,
-                               uint64_t lognum,
-                               ballot* highest_ballot,
-                               std::vector<pvalue>* pvals,
-                               uint64_t* lowest_acceptable_slot);
+private:
+	struct log_segment;
+	class garbage_collector;
+	void compact_pvals(std::vector<pvalue> *pvals);
+	bool atomic_read(const char *path, std::string *contents);
+	bool atomic_write(const char *path, const std::string &contents);
+	bool parse_identity(const std::string &ident,
+	                    server *saved_us, bootstrap *saved_bootstrap);
+	log_segment *get_writable_log();
+	static bool replay_log(int dir,
+	                       uint64_t lognum,
+	                       ballot *highest_ballot,
+	                       std::vector<pvalue> *pvals,
+	                       uint64_t *lowest_acceptable_slot);
 
-    private:
-        ballot m_ballot;
-        std::vector<pvalue> m_pvals;
-        uint64_t m_lowest_acceptable_slot;
-        po6::io::fd m_dir;
-        po6::io::fd m_lock;
-        uint64_t m_opcount;
-        bool m_permafail;
-        std::auto_ptr<log_segment> m_current;
-        std::auto_ptr<log_segment> m_previous;
-        const std::auto_ptr<garbage_collector> m_gc;
+private:
+	ballot m_ballot;
+	std::vector<pvalue> m_pvals;
+	uint64_t m_lowest_acceptable_slot;
+	po6::io::fd m_dir;
+	po6::io::fd m_lock;
+	uint64_t m_opcount;
+	bool m_permafail;
+	std::auto_ptr<log_segment> m_current;
+	std::auto_ptr<log_segment> m_previous;
+	const std::auto_ptr<garbage_collector> m_gc;
 };
 
 END_REPLICANT_NAMESPACE

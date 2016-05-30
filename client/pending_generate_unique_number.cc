@@ -35,10 +35,10 @@
 using replicant::pending_generate_unique_number;
 
 pending_generate_unique_number :: pending_generate_unique_number(int64_t id,
-                                                                 replicant_returncode* st,
-                                                                 uint64_t* number)
-    : pending(id, st)
-    , m_number(number)
+        replicant_returncode *st,
+        uint64_t *number)
+	: pending(id, st)
+	, m_number(number)
 {
 }
 
@@ -49,33 +49,32 @@ pending_generate_unique_number :: ~pending_generate_unique_number() throw ()
 std::auto_ptr<e::buffer>
 pending_generate_unique_number :: request(uint64_t nonce)
 {
-    const size_t sz = BUSYBEE_HEADER_SIZE
-                    + pack_size(REPLNET_UNIQUE_NUMBER)
-                    + sizeof(uint64_t);
-    std::auto_ptr<e::buffer> msg(e::buffer::create(sz));
-    msg->pack_at(BUSYBEE_HEADER_SIZE) << REPLNET_UNIQUE_NUMBER << nonce;
-    return msg;
+	const size_t sz = BUSYBEE_HEADER_SIZE
+	                  + pack_size(REPLNET_UNIQUE_NUMBER)
+	                  + sizeof(uint64_t);
+	std::auto_ptr<e::buffer> msg(e::buffer::create(sz));
+	msg->pack_at(BUSYBEE_HEADER_SIZE) << REPLNET_UNIQUE_NUMBER << nonce;
+	return msg;
 }
 
 bool
 pending_generate_unique_number :: resend_on_failure()
 {
-    return true;
+	return true;
 }
 
 void
-pending_generate_unique_number :: handle_response(client*,
+pending_generate_unique_number :: handle_response(client *,
                                                   std::auto_ptr<e::buffer>,
                                                   e::unpacker up)
 {
-    up = up >> *m_number;
-
-    if (up.error() || up.remain())
-    {
-        PENDING_ERROR(SERVER_ERROR) << "received bad unique number response";
-    }
-    else
-    {
-        this->success();
-    }
+	up = up >> *m_number;
+	if (up.error() || up.remain())
+	{
+		PENDING_ERROR(SERVER_ERROR) << "received bad unique number response";
+	}
+	else
+	{
+		this->success();
+	}
 }

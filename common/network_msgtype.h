@@ -38,46 +38,46 @@ BEGIN_REPLICANT_NAMESPACE
 
 enum network_msgtype
 {
-    REPLNET_NOP                     = 0,
+	REPLNET_NOP                     = 0,
 
-    REPLNET_BOOTSTRAP               = 28,
-    REPLNET_PING                    = 29,
-    REPLNET_PONG                    = 30,
-    REPLNET_STATE_TRANSFER          = 31,
-    // 26 is dead
-    REPLNET_WHO_ARE_YOU             = 25,
-    REPLNET_IDENTITY                = 24,
+	REPLNET_BOOTSTRAP               = 28,
+	REPLNET_PING                    = 29,
+	REPLNET_PONG                    = 30,
+	REPLNET_STATE_TRANSFER          = 31,
+	// 26 is dead
+	REPLNET_WHO_ARE_YOU             = 25,
+	REPLNET_IDENTITY                = 24,
 
-    REPLNET_PAXOS_PHASE1A           = 32,
-    REPLNET_PAXOS_PHASE1B           = 33,
-    REPLNET_PAXOS_PHASE2A           = 34,
-    REPLNET_PAXOS_PHASE2B           = 35,
-    REPLNET_PAXOS_LEARN             = 36,
-    REPLNET_PAXOS_SUBMIT            = 37,
+	REPLNET_PAXOS_PHASE1A           = 32,
+	REPLNET_PAXOS_PHASE1B           = 33,
+	REPLNET_PAXOS_PHASE2A           = 34,
+	REPLNET_PAXOS_PHASE2B           = 35,
+	REPLNET_PAXOS_LEARN             = 36,
+	REPLNET_PAXOS_SUBMIT            = 37,
 
-    REPLNET_SERVER_BECOME_MEMBER    = 48,
-    REPLNET_UNIQUE_NUMBER           = 63,
-    REPLNET_OBJECT_FAILED           = 62,
-    REPLNET_POKE                    = 64,
-    REPLNET_COND_WAIT               = 69,
-    REPLNET_CALL                    = 70,
-    REPLNET_GET_ROBUST_PARAMS       = 72,
-    REPLNET_CALL_ROBUST             = 73,
+	REPLNET_SERVER_BECOME_MEMBER    = 48,
+	REPLNET_UNIQUE_NUMBER           = 63,
+	REPLNET_OBJECT_FAILED           = 62,
+	REPLNET_POKE                    = 64,
+	REPLNET_COND_WAIT               = 69,
+	REPLNET_CALL                    = 70,
+	REPLNET_GET_ROBUST_PARAMS       = 72,
+	REPLNET_CALL_ROBUST             = 73,
 
-    REPLNET_CLIENT_RESPONSE         = 224,
+	REPLNET_CLIENT_RESPONSE         = 224,
 
-    REPLNET_GARBAGE                 = 255
+	REPLNET_GARBAGE                 = 255
 };
 
-std::ostream&
-operator << (std::ostream& lhs, network_msgtype rhs);
+std::ostream &
+operator << (std::ostream &lhs, network_msgtype rhs);
 
 e::packer
-operator << (e::packer lhs, const network_msgtype& rhs);
+operator << (e::packer lhs, const network_msgtype &rhs);
 e::unpacker
-operator >> (e::unpacker lhs, network_msgtype& rhs);
+operator >> (e::unpacker lhs, network_msgtype &rhs);
 size_t
-pack_size(const network_msgtype& rhs);
+pack_size(const network_msgtype &rhs);
 
 END_REPLICANT_NAMESPACE
 

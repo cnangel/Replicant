@@ -35,49 +35,49 @@
 using replicant::server;
 
 server :: server()
-    : id()
-    , bind_to()
+	: id()
+	, bind_to()
 {
 }
 
-server :: server(server_id sid, const po6::net::location& bt)
-    : id(sid)
-    , bind_to(bt)
+server :: server(server_id sid, const po6::net::location &bt)
+	: id(sid)
+	, bind_to(bt)
 {
-}
-
-bool
-replicant :: operator < (const server& lhs, const server& rhs)
-{
-    return lhs.id < rhs.id;
 }
 
 bool
-replicant :: operator == (const server& lhs, const server& rhs)
+replicant :: operator < (const server &lhs, const server &rhs)
 {
-    return lhs.id == rhs.id;
+	return lhs.id < rhs.id;
 }
 
-std::ostream&
-replicant :: operator << (std::ostream& lhs, const server& rhs)
+bool
+replicant :: operator == (const server &lhs, const server &rhs)
 {
-    return lhs << "server(id=" << rhs.id.get() << ", bind_to=" << rhs.bind_to << ")";
+	return lhs.id == rhs.id;
+}
+
+std::ostream &
+replicant :: operator << (std::ostream &lhs, const server &rhs)
+{
+	return lhs << "server(id=" << rhs.id.get() << ", bind_to=" << rhs.bind_to << ")";
 }
 
 e::packer
-replicant :: operator << (e::packer lhs, const server& rhs)
+replicant :: operator << (e::packer lhs, const server &rhs)
 {
-    return lhs << rhs.id << rhs.bind_to;
+	return lhs << rhs.id << rhs.bind_to;
 }
 
 e::unpacker
-replicant :: operator >> (e::unpacker lhs, server& rhs)
+replicant :: operator >> (e::unpacker lhs, server &rhs)
 {
-    return lhs >> rhs.id >> rhs.bind_to;
+	return lhs >> rhs.id >> rhs.bind_to;
 }
 
 size_t
-replicant :: pack_size(const server& rhs)
+replicant :: pack_size(const server &rhs)
 {
-    return pack_size(rhs.id) + pack_size(rhs.bind_to);
+	return pack_size(rhs.id) + pack_size(rhs.bind_to);
 }

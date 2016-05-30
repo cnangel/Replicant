@@ -35,39 +35,39 @@ BEGIN_REPLICANT_NAMESPACE
 
 class pending_cond_follow : public pending
 {
-    public:
-        pending_cond_follow(int64_t client_visible_id,
-                            const char* object, const char* cond,
-                            replicant_returncode* status,
-                            uint64_t* state,
-                            char** data, size_t* data_sz);
-        pending_cond_follow(int64_t client_visible_id,
-                            const char* object, const char* cond,
-                            replicant_returncode* status,
-                            uint64_t* state,
-                            char** data, size_t* data_sz,
-                            void (client::*callback)());
-        virtual ~pending_cond_follow() throw ();
+public:
+	pending_cond_follow(int64_t client_visible_id,
+	                    const char *object, const char *cond,
+	                    replicant_returncode *status,
+	                    uint64_t *state,
+	                    char **data, size_t *data_sz);
+	pending_cond_follow(int64_t client_visible_id,
+	                    const char *object, const char *cond,
+	                    replicant_returncode *status,
+	                    uint64_t *state,
+	                    char **data, size_t *data_sz,
+	                    void (client::*callback)());
+	virtual ~pending_cond_follow() throw ();
 
-    public:
-        virtual std::auto_ptr<e::buffer> request(uint64_t nonce);
-        virtual bool resend_on_failure();
-        virtual void handle_response(client* cl,
-                                     std::auto_ptr<e::buffer> msg,
-                                     e::unpacker up);
+public:
+	virtual std::auto_ptr<e::buffer> request(uint64_t nonce);
+	virtual bool resend_on_failure();
+	virtual void handle_response(client *cl,
+	                             std::auto_ptr<e::buffer> msg,
+	                             e::unpacker up);
 
-    private:
-        const std::string m_object;
-        const std::string m_cond;
-        uint64_t* const m_state;
-        char** const m_data;
-        size_t* const m_data_sz;
-        bool m_has_callback;
-        void (client::*m_callback)();
+private:
+	const std::string m_object;
+	const std::string m_cond;
+	uint64_t *const m_state;
+	char **const m_data;
+	size_t *const m_data_sz;
+	bool m_has_callback;
+	void (client::*m_callback)();
 
-    private:
-        pending_cond_follow(const pending_cond_follow&);
-        pending_cond_follow& operator = (const pending_cond_follow&);
+private:
+	pending_cond_follow(const pending_cond_follow &);
+	pending_cond_follow &operator = (const pending_cond_follow &);
 };
 
 END_REPLICANT_NAMESPACE

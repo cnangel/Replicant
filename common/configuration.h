@@ -41,58 +41,58 @@ BEGIN_REPLICANT_NAMESPACE
 
 class configuration
 {
-    public:
-        configuration();
-        configuration(cluster_id cluster,
-                      version_id version,
-                      uint64_t first_slot,
-                      server* servers,
-                      size_t servers_sz);
-        configuration(const configuration& c, const server& s, uint64_t first_slot);
-        configuration(const configuration&);
-        ~configuration() throw ();
+public:
+	configuration();
+	configuration(cluster_id cluster,
+	              version_id version,
+	              uint64_t first_slot,
+	              server *servers,
+	              size_t servers_sz);
+	configuration(const configuration &c, const server &s, uint64_t first_slot);
+	configuration(const configuration &);
+	~configuration() throw ();
 
-    public:
-        bool validate() const;
+public:
+	bool validate() const;
 
-    // metadata
-    public:
-        cluster_id cluster() const { return m_cluster; }
-        version_id version() const { return m_version; }
-        uint64_t first_slot() const { return m_first_slot; }
+	// metadata
+public:
+	cluster_id cluster() const { return m_cluster; }
+	version_id version() const { return m_version; }
+	uint64_t first_slot() const { return m_first_slot; }
 
-    // membership
-    public:
-        bool has(server_id si) const;
-        bool has(const po6::net::location& bind_to) const;
-        unsigned index(server_id si) const;
-        const std::vector<server>& servers() const { return m_servers; }
-        std::vector<server_id> server_ids() const;
-        const server* get(server_id si) const;
-        const server* get(const po6::net::location& bind_to) const;
-        bootstrap current_bootstrap() const;
+	// membership
+public:
+	bool has(server_id si) const;
+	bool has(const po6::net::location &bind_to) const;
+	unsigned index(server_id si) const;
+	const std::vector<server> &servers() const { return m_servers; }
+	std::vector<server_id> server_ids() const;
+	const server *get(server_id si) const;
+	const server *get(const po6::net::location &bind_to) const;
+	bootstrap current_bootstrap() const;
 
-    private:
-        friend e::packer operator << (e::packer lhs, const configuration& rhs);
-        friend e::unpacker operator >> (e::unpacker lhs, configuration& rhs);
-        friend size_t pack_size(const configuration& rhs);
+private:
+	friend e::packer operator << (e::packer lhs, const configuration &rhs);
+	friend e::unpacker operator >> (e::unpacker lhs, configuration &rhs);
+	friend size_t pack_size(const configuration &rhs);
 
-    private:
-        cluster_id m_cluster;
-        version_id m_version;
-        uint64_t m_first_slot;
-        std::vector<server> m_servers;
+private:
+	cluster_id m_cluster;
+	version_id m_version;
+	uint64_t m_first_slot;
+	std::vector<server> m_servers;
 };
 
-std::ostream&
-operator << (std::ostream& lhs, const configuration& rhs);
+std::ostream &
+operator << (std::ostream &lhs, const configuration &rhs);
 
 e::packer
-operator << (e::packer lhs, const configuration& rhs);
+operator << (e::packer lhs, const configuration &rhs);
 e::unpacker
-operator >> (e::unpacker lhs, configuration& rhs);
+operator >> (e::unpacker lhs, configuration &rhs);
 size_t
-pack_size(const configuration& rhs);
+pack_size(const configuration &rhs);
 
 END_REPLICANT_NAMESPACE
 

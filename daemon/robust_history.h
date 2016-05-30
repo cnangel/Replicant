@@ -43,59 +43,59 @@ BEGIN_REPLICANT_NAMESPACE
 
 class robust_history
 {
-    public:
-        robust_history();
-        ~robust_history() throw ();
+public:
+	robust_history();
+	~robust_history() throw ();
 
-    public:
-        bool has_output(uint64_t nonce,
-                        uint64_t min_slot,
-                        replicant_returncode* status,
-                        std::string* output);
-        void executed(const pvalue& p,
-                      uint64_t command_nonce,
-                      replicant_returncode status,
-                      const std::string& result);
-        void copy_up_to(robust_history* other, uint64_t slot);
-        void inhibit_gc();
-        void allow_gc();
+public:
+	bool has_output(uint64_t nonce,
+	                uint64_t min_slot,
+	                replicant_returncode *status,
+	                std::string *output);
+	void executed(const pvalue &p,
+	              uint64_t command_nonce,
+	              replicant_returncode status,
+	              const std::string &result);
+	void copy_up_to(robust_history *other, uint64_t slot);
+	void inhibit_gc();
+	void allow_gc();
 
-    private:
-        class entry;
-        friend e::packer operator << (e::packer lhs, robust_history& rhs);
-        friend e::unpacker operator >> (e::unpacker lhs, robust_history& rhs);
-        friend size_t pack_size(const robust_history& rhs);
-        friend e::packer operator << (e::packer lhs, const robust_history::entry& rhs);
-        friend e::unpacker operator >> (e::unpacker lhs, robust_history::entry& rhs);
-        friend size_t pack_size(const robust_history::entry& rhs);
+private:
+	class entry;
+	friend e::packer operator << (e::packer lhs, robust_history &rhs);
+	friend e::unpacker operator >> (e::unpacker lhs, robust_history &rhs);
+	friend size_t pack_size(const robust_history &rhs);
+	friend e::packer operator << (e::packer lhs, const robust_history::entry &rhs);
+	friend e::unpacker operator >> (e::unpacker lhs, robust_history::entry &rhs);
+	friend size_t pack_size(const robust_history::entry &rhs);
 
-    private:
-        void cleanup();
+private:
+	void cleanup();
 
-    private:
-        po6::threads::mutex m_mtx;
-        std::list<entry> m_history;
-        google::dense_hash_set<uint64_t> m_lookup;
-        bool m_inhibit_gc;
+private:
+	po6::threads::mutex m_mtx;
+	std::list<entry> m_history;
+	google::dense_hash_set<uint64_t> m_lookup;
+	bool m_inhibit_gc;
 
-    private:
-        robust_history(const robust_history&);
-        robust_history& operator = (const robust_history&);
+private:
+	robust_history(const robust_history &);
+	robust_history &operator = (const robust_history &);
 };
 
 e::packer
-operator << (e::packer lhs, robust_history& rhs);
+operator << (e::packer lhs, robust_history &rhs);
 e::unpacker
-operator >> (e::unpacker lhs, robust_history& rhs);
+operator >> (e::unpacker lhs, robust_history &rhs);
 size_t
-pack_size(const robust_history& rhs);
+pack_size(const robust_history &rhs);
 
 e::packer
-operator << (e::packer lhs, const robust_history::entry& rhs);
+operator << (e::packer lhs, const robust_history::entry &rhs);
 e::unpacker
-operator >> (e::unpacker lhs, robust_history::entry& rhs);
+operator >> (e::unpacker lhs, robust_history::entry &rhs);
 size_t
-pack_size(const robust_history::entry& rhs);
+pack_size(const robust_history::entry &rhs);
 
 END_REPLICANT_NAMESPACE
 

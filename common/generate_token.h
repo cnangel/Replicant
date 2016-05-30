@@ -37,7 +37,7 @@
 BEGIN_REPLICANT_NAMESPACE
 
 bool
-generate_token(uint64_t* token);
+generate_token(uint64_t *token);
 
 END_REPLICANT_NAMESPACE
 

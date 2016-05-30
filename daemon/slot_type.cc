@@ -29,23 +29,23 @@
 #include "daemon/slot_type.h"
 
 e::packer
-replicant :: operator << (e::packer lhs, const slot_type& rhs)
+replicant :: operator << (e::packer lhs, const slot_type &rhs)
 {
-    uint8_t mt = static_cast<uint8_t>(rhs);
-    return lhs << mt;
+	uint8_t mt = static_cast<uint8_t>(rhs);
+	return lhs << mt;
 }
 
 e::unpacker
-replicant :: operator >> (e::unpacker lhs, slot_type& rhs)
+replicant :: operator >> (e::unpacker lhs, slot_type &rhs)
 {
-    uint8_t mt;
-    lhs = lhs >> mt;
-    rhs = static_cast<slot_type>(mt);
-    return lhs;
+	uint8_t mt;
+	lhs = lhs >> mt;
+	rhs = static_cast<slot_type>(mt);
+	return lhs;
 }
 
 size_t
-replicant :: pack_size(const slot_type&)
+replicant :: pack_size(const slot_type &)
 {
-    return sizeof(uint8_t);
+	return sizeof(uint8_t);
 }

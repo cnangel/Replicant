@@ -42,40 +42,40 @@ class daemon;
 
 class condition
 {
-    public:
-        condition();
-        condition(uint64_t initial);
-        ~condition() throw ();
+public:
+	condition();
+	condition(uint64_t initial);
+	~condition() throw ();
 
-    public:
-        void wait(daemon* d, server_id si, uint64_t nonce, uint64_t state);
-        void broadcast(daemon* d);
-        void broadcast(daemon* d, const char* data, size_t data_sz);
-        uint64_t peek_state() const;
-        void peek_state(uint64_t* state, const char** data, size_t* data_sz) const;
+public:
+	void wait(daemon *d, server_id si, uint64_t nonce, uint64_t state);
+	void broadcast(daemon *d);
+	void broadcast(daemon *d, const char *data, size_t data_sz);
+	uint64_t peek_state() const;
+	void peek_state(uint64_t *state, const char **data, size_t *data_sz) const;
 
-    private:
-        struct waiter;
-        uint64_t m_state;
-        std::string m_data;
-        std::vector<waiter> m_waiters;
+private:
+	struct waiter;
+	uint64_t m_state;
+	std::string m_data;
+	std::vector<waiter> m_waiters;
 
-    private:
-        friend e::packer operator << (e::packer lhs, const condition& rhs);
-        friend e::unpacker operator >> (e::unpacker lhs, condition& rhs);
-        friend size_t pack_size(const condition& rhs);
+private:
+	friend e::packer operator << (e::packer lhs, const condition &rhs);
+	friend e::unpacker operator >> (e::unpacker lhs, condition &rhs);
+	friend size_t pack_size(const condition &rhs);
 
-    private:
-        condition(const condition&);
-        condition& operator = (const condition&);
+private:
+	condition(const condition &);
+	condition &operator = (const condition &);
 };
 
 e::packer
-operator << (e::packer lhs, const condition& rhs);
+operator << (e::packer lhs, const condition &rhs);
 e::unpacker
-operator >> (e::unpacker lhs, condition& rhs);
+operator >> (e::unpacker lhs, condition &rhs);
 size_t
-pack_size(const condition& rhs);
+pack_size(const condition &rhs);
 
 END_REPLICANT_NAMESPACE
 

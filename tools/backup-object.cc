@@ -43,73 +43,64 @@
 #include "tools/common.h"
 
 int
-main(int argc, const char* argv[])
+main(int argc, const char *argv[])
 {
-    const char* output_cstr = NULL;
-    connect_opts conn;
-    e::argparser ap;
-    ap.autohelp();
-    ap.option_string("[OPTIONS] <object>");
-    ap.arg().name('o', "output")
-            .description("store the backup in this file (default: <object>.backup)")
-            .as_string(&output_cstr).metavar("file");
-    ap.add("Connect to a cluster:", conn.parser());
-
-    if (!ap.parse(argc, argv))
-    {
-        return EXIT_FAILURE;
-    }
-
-    if (ap.args_sz() != 1)
-    {
-        std::cerr << "command requires the object name\n" << std::endl;
-        ap.usage();
-        return EXIT_FAILURE;
-    }
-
-    if (!conn.validate())
-    {
-        std::cerr << "invalid host:port specification\n" << std::endl;
-        ap.usage();
-        return EXIT_FAILURE;
-    }
-
-    std::string output;
-
-    if (output_cstr)
-    {
-        output = output_cstr;
-    }
-    else
-    {
-        output = ap.args()[0];
-        output += ".backup";
-    }
-
-    try
-    {
-        replicant_client* r = replicant_client_create(conn.host(), conn.port());
-        replicant_returncode re = REPLICANT_GARBAGE;
-        char* state = NULL;
-        size_t state_sz = 0;
-        int64_t rid = replicant_client_backup_object(r, ap.args()[0], &re, &state, &state_sz);
-
-        if (!cli_finish(r, rid, &re))
-        {
-            return EXIT_FAILURE;
-        }
-
-        if (!replicant::atomic_write(AT_FDCWD, output.c_str(), std::string(state, state_sz)))
-        {
-            std::cerr << "could not write state: " << po6::strerror(errno) << std::endl;
-            return EXIT_FAILURE;
-        }
-
-        return EXIT_SUCCESS;
-    }
-    catch (std::exception& e)
-    {
-        std::cerr << "error: " << e.what() << std::endl;
-        return EXIT_FAILURE;
-    }
+	const char *output_cstr = NULL;
+	connect_opts conn;
+	e::argparser ap;
+	ap.autohelp();
+	ap.option_string("[OPTIONS] <object>");
+	ap.arg().name('o', "output")
+	.description("store the backup in this file (default: <object>.backup)")
+	.as_string(&output_cstr).metavar("file");
+	ap.add("Connect to a cluster:", conn.parser());
+	if (!ap.parse(argc, argv))
+	{
+		return EXIT_FAILURE;
+	}
+	if (ap.args_sz() != 1)
+	{
+		std::cerr << "command requires the object name\n" << std::endl;
+		ap.usage();
+		return EXIT_FAILURE;
+	}
+	if (!conn.validate())
+	{
+		std::cerr << "invalid host:port specification\n" << std::endl;
+		ap.usage();
+		return EXIT_FAILURE;
+	}
+	std::string output;
+	if (output_cstr)
+	{
+		output = output_cstr;
+	}
+	else
+	{
+		output = ap.args()[0];
+		output += ".backup";
+	}
+	try
+	{
+		replicant_client *r = replicant_client_create(conn.host(), conn.port());
+		replicant_returncode re = REPLICANT_GARBAGE;
+		char *state = NULL;
+		size_t state_sz = 0;
+		int64_t rid = replicant_client_backup_object(r, ap.args()[0], &re, &state, &state_sz);
+		if (!cli_finish(r, rid, &re))
+		{
+			return EXIT_FAILURE;
+		}
+		if (!replicant::atomic_write(AT_FDCWD, output.c_str(), std::string(state, state_sz)))
+		{
+			std::cerr << "could not write state: " << po6::strerror(errno) << std::endl;
+			return EXIT_FAILURE;
+		}
+		return EXIT_SUCCESS;
+	}
+	catch (std::exception &e)
+	{
+		std::cerr << "error: " << e.what() << std::endl;
+		return EXIT_FAILURE;
+	}
 }

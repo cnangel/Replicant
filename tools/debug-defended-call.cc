@@ -35,82 +35,74 @@
 #include "tools/common.h"
 
 int
-main(int argc, const char* argv[])
+main(int argc, const char *argv[])
 {
-    const char* obj = "log";
-    const char* enter_func = "log";
-    const char* enter_input = "enter";
-    const char* exit_func = "log";
-    const char* exit_input = "exit";
-    connect_opts conn;
-    e::argparser ap;
-    ap.autohelp();
-    ap.option_string("[OPTIONS]");
-    ap.arg().name('o', "object")
-            .description("object that maintains the condition")
-            .metavar("OBJ").as_string(&obj);
-    ap.arg().long_name("entry-func")
-            .description("function call on entry")
-            .metavar("FUNC").as_string(&enter_func);
-    ap.arg().long_name("entry-input")
-            .description("input to entry function")
-            .metavar("DATA").as_string(&enter_input);
-    ap.arg().long_name("exit-func")
-            .description("function call on exit")
-            .metavar("FUNC").as_string(&exit_func);
-    ap.arg().long_name("exit-input")
-            .description("input to exit function")
-            .metavar("DATA").as_string(&exit_input);
-    ap.add("Connect to a cluster:", conn.parser());
-
-    if (!ap.parse(argc, argv))
-    {
-        return EXIT_FAILURE;
-    }
-
-    if (ap.args_sz() != 0)
-    {
-        std::cerr << "command takes no positional arguments\n" << std::endl;
-        ap.usage();
-        return EXIT_FAILURE;
-    }
-
-    if (!conn.validate())
-    {
-        std::cerr << "invalid host:port specification\n" << std::endl;
-        ap.usage();
-        return EXIT_FAILURE;
-    }
-
-    replicant_client* r = replicant_client_create(conn.host(), conn.port());
-    replicant_returncode re = REPLICANT_GARBAGE;
-    int64_t rid = replicant_client_defended_call(r, obj,
-                                                 enter_func, enter_input, strlen(enter_input) + 1,
-                                                 exit_func, exit_input, strlen(exit_input) + 1, &re);
-
-    if (!cli_finish(r, rid, &re))
-    {
-        return EXIT_FAILURE;
-    }
-
-    while (true)
-    {
-        replicant_returncode le = REPLICANT_GARBAGE;
-        int64_t lid = replicant_client_loop(r, -1, &le);
-
-        if (lid < 0 && le == REPLICANT_TIMEOUT)
-        {
-            continue;
-        }
-        else if (lid < 0 && le == REPLICANT_INTERRUPTED)
-        {
-            continue;
-        }
-        else
-        {
-            cli_log_error(r, le);
-        }
-    }
-
-    return EXIT_SUCCESS;
+	const char *obj = "log";
+	const char *enter_func = "log";
+	const char *enter_input = "enter";
+	const char *exit_func = "log";
+	const char *exit_input = "exit";
+	connect_opts conn;
+	e::argparser ap;
+	ap.autohelp();
+	ap.option_string("[OPTIONS]");
+	ap.arg().name('o', "object")
+	.description("object that maintains the condition")
+	.metavar("OBJ").as_string(&obj);
+	ap.arg().long_name("entry-func")
+	.description("function call on entry")
+	.metavar("FUNC").as_string(&enter_func);
+	ap.arg().long_name("entry-input")
+	.description("input to entry function")
+	.metavar("DATA").as_string(&enter_input);
+	ap.arg().long_name("exit-func")
+	.description("function call on exit")
+	.metavar("FUNC").as_string(&exit_func);
+	ap.arg().long_name("exit-input")
+	.description("input to exit function")
+	.metavar("DATA").as_string(&exit_input);
+	ap.add("Connect to a cluster:", conn.parser());
+	if (!ap.parse(argc, argv))
+	{
+		return EXIT_FAILURE;
+	}
+	if (ap.args_sz() != 0)
+	{
+		std::cerr << "command takes no positional arguments\n" << std::endl;
+		ap.usage();
+		return EXIT_FAILURE;
+	}
+	if (!conn.validate())
+	{
+		std::cerr << "invalid host:port specification\n" << std::endl;
+		ap.usage();
+		return EXIT_FAILURE;
+	}
+	replicant_client *r = replicant_client_create(conn.host(), conn.port());
+	replicant_returncode re = REPLICANT_GARBAGE;
+	int64_t rid = replicant_client_defended_call(r, obj,
+	                                             enter_func, enter_input, strlen(enter_input) + 1,
+	                                             exit_func, exit_input, strlen(exit_input) + 1, &re);
+	if (!cli_finish(r, rid, &re))
+	{
+		return EXIT_FAILURE;
+	}
+	while (true)
+	{
+		replicant_returncode le = REPLICANT_GARBAGE;
+		int64_t lid = replicant_client_loop(r, -1, &le);
+		if (lid < 0 && le == REPLICANT_TIMEOUT)
+		{
+			continue;
+		}
+		else if (lid < 0 && le == REPLICANT_INTERRUPTED)
+		{
+			continue;
+		}
+		else
+		{
+			cli_log_error(r, le);
+		}
+	}
+	return EXIT_SUCCESS;
 }

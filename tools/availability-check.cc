@@ -33,57 +33,49 @@
 #include "tools/common.h"
 
 int
-main(int argc, const char* argv[])
+main(int argc, const char *argv[])
 {
-    long servers = 5;
-    long timeout = 10;
-    connect_opts conn;
-    e::argparser ap;
-    ap.autohelp();
-    ap.option_string("[OPTIONS]");
-    ap.arg().name('s', "servers")
-            .description("wait for N servers to join the cluster (default: 5)")
-            .metavar("N").as_long(&servers);
-    ap.arg().name('t', "timeout")
-            .description("wait at most S seconds (default: 10)")
-            .metavar("S").as_long(&timeout);
-    ap.add("Connect to a cluster:", conn.parser());
-
-    if (!ap.parse(argc, argv))
-    {
-        return EXIT_FAILURE;
-    }
-
-    if (ap.args_sz() != 0)
-    {
-        std::cerr << "command takes no positional arguments\n" << std::endl;
-        ap.usage();
-        return EXIT_FAILURE;
-    }
-
-    if (!conn.validate())
-    {
-        std::cerr << "invalid host:port specification\n" << std::endl;
-        ap.usage();
-        return EXIT_FAILURE;
-    }
-
-    replicant_client* r = replicant_client_create(conn.host(), conn.port());
-
-    if (!r)
-    {
-        std::cerr << "could not create replicant client" << std::endl;
-        return EXIT_FAILURE;
-    }
-
-    e::guard g_r = e::makeguard(replicant_client_destroy, r);
-    replicant_returncode re = REPLICANT_GARBAGE;
-    int ret = replicant_client_availability_check(r, servers, timeout, &re);
-
-    if (ret < 0)
-    {
-        return EXIT_FAILURE;
-    }
-
-    return EXIT_SUCCESS;
+	long servers = 5;
+	long timeout = 10;
+	connect_opts conn;
+	e::argparser ap;
+	ap.autohelp();
+	ap.option_string("[OPTIONS]");
+	ap.arg().name('s', "servers")
+	.description("wait for N servers to join the cluster (default: 5)")
+	.metavar("N").as_long(&servers);
+	ap.arg().name('t', "timeout")
+	.description("wait at most S seconds (default: 10)")
+	.metavar("S").as_long(&timeout);
+	ap.add("Connect to a cluster:", conn.parser());
+	if (!ap.parse(argc, argv))
+	{
+		return EXIT_FAILURE;
+	}
+	if (ap.args_sz() != 0)
+	{
+		std::cerr << "command takes no positional arguments\n" << std::endl;
+		ap.usage();
+		return EXIT_FAILURE;
+	}
+	if (!conn.validate())
+	{
+		std::cerr << "invalid host:port specification\n" << std::endl;
+		ap.usage();
+		return EXIT_FAILURE;
+	}
+	replicant_client *r = replicant_client_create(conn.host(), conn.port());
+	if (!r)
+	{
+		std::cerr << "could not create replicant client" << std::endl;
+		return EXIT_FAILURE;
+	}
+	e::guard g_r = e::makeguard(replicant_client_destroy, r);
+	replicant_returncode re = REPLICANT_GARBAGE;
+	int ret = replicant_client_availability_check(r, servers, timeout, &re);
+	if (ret < 0)
+	{
+		return EXIT_FAILURE;
+	}
+	return EXIT_SUCCESS;
 }

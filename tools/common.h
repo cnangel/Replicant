@@ -33,80 +33,74 @@
 
 class connect_opts
 {
-    public:
-        connect_opts()
-            : m_ap(), m_host("127.0.0.1"), m_port(1982)
-        {
-            m_ap.arg().name('h', "host")
-                      .description("connect to an IP address or hostname (default: 127.0.0.1)")
-                      .metavar("addr").as_string(&m_host);
-            m_ap.arg().name('p', "port")
-                      .description("connect to an alternative port (default: 1982)")
-                      .metavar("port").as_long(&m_port);
-        }
-        ~connect_opts() throw () {}
+public:
+	connect_opts()
+		: m_ap(), m_host("127.0.0.1"), m_port(1982)
+	{
+		m_ap.arg().name('h', "host")
+		.description("connect to an IP address or hostname (default: 127.0.0.1)")
+		.metavar("addr").as_string(&m_host);
+		m_ap.arg().name('p', "port")
+		.description("connect to an alternative port (default: 1982)")
+		.metavar("port").as_long(&m_port);
+	}
+	~connect_opts() throw () {}
 
-    public:
-        const e::argparser& parser() { return m_ap; }
-        const char* host() { return m_host; }
-        uint16_t port() { return m_port; }
-        bool validate()
-        {
-            if (m_port <= 0 || m_port >= (1 << 16))
-            {
-                std::cerr << "port number to connect to is out of range" << std::endl;
-                return false;
-            }
+public:
+	const e::argparser &parser() { return m_ap; }
+	const char *host() { return m_host; }
+	uint16_t port() { return m_port; }
+	bool validate()
+	{
+		if (m_port <= 0 || m_port >= (1 << 16))
+		{
+			std::cerr << "port number to connect to is out of range" << std::endl;
+			return false;
+		}
+		return true;
+	}
 
-            return true;
-        }
+private:
+	connect_opts(const connect_opts &);
+	connect_opts &operator = (const connect_opts &);
 
-    private:
-        connect_opts(const connect_opts&);
-        connect_opts& operator = (const connect_opts&);
-
-    private:
-        e::argparser m_ap;
-        const char* m_host;
-        long m_port;
+private:
+	e::argparser m_ap;
+	const char *m_host;
+	long m_port;
 };
 
 void
-cli_log_error(struct replicant_client* r, replicant_returncode status)
+cli_log_error(struct replicant_client *r, replicant_returncode status)
 {
-    std::cerr << __FILE__ << ":" << __LINE__ << " "
-              << replicant_returncode_to_string(status) << " "
-              << replicant_client_error_message(r) << " @ "
-              << replicant_client_error_location(r) << std::endl;
+	std::cerr << __FILE__ << ":" << __LINE__ << " "
+	          << replicant_returncode_to_string(status) << " "
+	          << replicant_client_error_message(r) << " @ "
+	          << replicant_client_error_location(r) << std::endl;
 }
 
 bool
-cli_finish(struct replicant_client* r, int64_t ret, enum replicant_returncode* status)
+cli_finish(struct replicant_client *r, int64_t ret, enum replicant_returncode *status)
 {
-    if (ret < 0)
-    {
-        cli_log_error(r, *status);
-        return false;
-    }
-
-    replicant_returncode lrc;
-    int64_t lid = replicant_client_wait(r, ret, -1, &lrc);
-
-    if (lid < 0)
-    {
-        cli_log_error(r, lrc);
-        return false;
-    }
-
-    assert(lid == ret);
-
-    if (*status != REPLICANT_SUCCESS)
-    {
-        cli_log_error(r, *status);
-        return false;
-    }
-
-    return true;
+	if (ret < 0)
+	{
+		cli_log_error(r, *status);
+		return false;
+	}
+	replicant_returncode lrc;
+	int64_t lid = replicant_client_wait(r, ret, -1, &lrc);
+	if (lid < 0)
+	{
+		cli_log_error(r, lrc);
+		return false;
+	}
+	assert(lid == ret);
+	if (*status != REPLICANT_SUCCESS)
+	{
+		cli_log_error(r, *status);
+		return false;
+	}
+	return true;
 }
 
 #endif // replicant_tools_common_h_

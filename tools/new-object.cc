@@ -32,37 +32,33 @@
 #include "tools/common.h"
 
 int
-main(int argc, const char* argv[])
+main(int argc, const char *argv[])
 {
-    connect_opts conn;
-    e::argparser ap;
-    ap.autohelp();
-    ap.option_string("[OPTIONS] <object> <library-path>");
-    ap.add("Connect to a cluster:", conn.parser());
-
-    if (!ap.parse(argc, argv))
-    {
-        return EXIT_FAILURE;
-    }
-
-    if (ap.args_sz() != 2)
-    {
-        std::cerr << "command requires the object name and library path\n" << std::endl;
-        ap.usage();
-        return EXIT_FAILURE;
-    }
-
-    if (!conn.validate())
-    {
-        std::cerr << "invalid host:port specification\n" << std::endl;
-        ap.usage();
-        return EXIT_FAILURE;
-    }
-
-    replicant_client* r = replicant_client_create(conn.host(), conn.port());
-    replicant_returncode re = REPLICANT_GARBAGE;
-    int64_t rid = replicant_client_new_object(r, ap.args()[0], ap.args()[1], &re);
-    int ret = cli_finish(r, rid, &re) ? EXIT_SUCCESS : EXIT_FAILURE;
-    replicant_client_destroy(r);
-    return ret;
+	connect_opts conn;
+	e::argparser ap;
+	ap.autohelp();
+	ap.option_string("[OPTIONS] <object> <library-path>");
+	ap.add("Connect to a cluster:", conn.parser());
+	if (!ap.parse(argc, argv))
+	{
+		return EXIT_FAILURE;
+	}
+	if (ap.args_sz() != 2)
+	{
+		std::cerr << "command requires the object name and library path\n" << std::endl;
+		ap.usage();
+		return EXIT_FAILURE;
+	}
+	if (!conn.validate())
+	{
+		std::cerr << "invalid host:port specification\n" << std::endl;
+		ap.usage();
+		return EXIT_FAILURE;
+	}
+	replicant_client *r = replicant_client_create(conn.host(), conn.port());
+	replicant_returncode re = REPLICANT_GARBAGE;
+	int64_t rid = replicant_client_new_object(r, ap.args()[0], ap.args()[1], &re);
+	int ret = cli_finish(r, rid, &re) ? EXIT_SUCCESS : EXIT_FAILURE;
+	replicant_client_destroy(r);
+	return ret;
 }

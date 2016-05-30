@@ -32,72 +32,71 @@
 /* Replicant */
 #include <rsm.h>
 
-void*
-log_create(struct rsm_context* ctx)
+void *
+log_create(struct rsm_context *ctx)
 {
-    return (void*) -1;
+	return (void *) - 1;
 }
 
-void*
-log_recreate(struct rsm_context* ctx,
-             const char* data, size_t data_sz)
+void *
+log_recreate(struct rsm_context *ctx,
+             const char *data, size_t data_sz)
 {
-    return (void*) -1;
+	return (void *) - 1;
 }
 
 int
-log_snapshot(struct rsm_context* ctx,
-             void* obj,
-             char** data, size_t* data_sz)
+log_snapshot(struct rsm_context *ctx,
+             void *obj,
+             char **data, size_t *data_sz)
 {
-    *data = NULL;
-    *data_sz = 0;
-    return 0;
+	*data = NULL;
+	*data_sz = 0;
+	return 0;
 }
 
 void
-log_log(struct rsm_context* ctx,
-        void* obj,
-        const char* data, size_t data_sz)
+log_log(struct rsm_context *ctx,
+        void *obj,
+        const char *data, size_t data_sz)
 {
-    rsm_log(ctx, "begin logging of function");
-    int is_print = 1;
-    int saw_null = 0;
-    size_t i = 0;
-
-    for (i = 0; i < data_sz; ++i)
-    {
-        if (data[i] == '\0')
-        {
-            saw_null = 1;
-            break;
-        }
-        else if (!isprint(data[i]))
-        {
-            is_print = 0;
-        }
-    }
-
-    if (is_print && !saw_null)
-    {
-        rsm_log(ctx, "log was asked to log \"%.*s\" and it is %lld bytes long", data_sz, data, i);
-    }
-    else if (is_print && saw_null)
-    {
-        rsm_log(ctx, "log was asked to log \"%s\" and it is %lld bytes long", data, i);
-    }
-    else
-    {
-        rsm_log(ctx, "will not log unprintable characters");
-    }
-
-    rsm_log(ctx, "end logging of function");
+	rsm_log(ctx, "begin logging of function");
+	int is_print = 1;
+	int saw_null = 0;
+	size_t i = 0;
+	for (i = 0; i < data_sz; ++i)
+	{
+		if (data[i] == '\0')
+		{
+			saw_null = 1;
+			break;
+		}
+		else if (!isprint(data[i]))
+		{
+			is_print = 0;
+		}
+	}
+	if (is_print && !saw_null)
+	{
+		rsm_log(ctx, "log was asked to log \"%.*s\" and it is %lld bytes long", data_sz, data, i);
+	}
+	else if (is_print && saw_null)
+	{
+		rsm_log(ctx, "log was asked to log \"%s\" and it is %lld bytes long", data, i);
+	}
+	else
+	{
+		rsm_log(ctx, "will not log unprintable characters");
+	}
+	rsm_log(ctx, "end logging of function");
 }
 
-struct state_machine rsm = {
-    log_create,
-    log_recreate,
-    log_snapshot,
-    {{"log", log_log},
-     {NULL, NULL}}
+struct state_machine rsm =
+{
+	log_create,
+	log_recreate,
+	log_snapshot,
+	{	{"log", log_log},
+		{NULL, NULL}
+	}
 };
